@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0E2C48;
+  --color-secondary: #184166;
+  --color-accent: #154875;
+  --color-bg-grey: #F9FAFB;
+  --color-text-dark: #111827;
+  --color-text-muted: #6B7280;
+
+  --animate-scroll: scroll 40s linear infinite;
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-grey);
+  color: var(--color-text-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+}
+
+.btn-primary {
+  @apply bg-accent text-white px-6 py-3 rounded-md font-semibold transition shadow-md hover:-translate-y-1 hover:shadow-lg inline-flex items-center gap-2;
+}
+
+.btn-outline {
+  @apply border-2 border-accent text-accent px-6 py-3 rounded-md font-semibold transition hover:bg-accent hover:text-white inline-flex items-center gap-2;
+}
+
+.glass-card {
+  @apply bg-white shadow-sm rounded-xl p-8 transition duration-300 hover:shadow-xl hover:-translate-y-2;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl text-gray-900 mb-4 font-black;
+}
+
+/* Subtle light grid line background */
+.hero-bg-grid {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
