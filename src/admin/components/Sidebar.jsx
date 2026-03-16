@@ -37,7 +37,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <aside className={`fixed xl:static inset-y-0 left-0 z-30 w-[260px] bg-white border-r border-gray-200 transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] xl:translate-x-0 flex flex-col shadow-2xl xl:shadow-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo & Close */}
                 <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100 shrink-0">
-                    <img src="/images/dc-logo.svg" alt="Admin Logo" className="h-9 w-auto" />
+                    <img src="/logo.svg" alt="Admin Logo" className="h-9 w-auto" />
                     <button
                         onClick={() => setSidebarOpen(false)}
                         className="xl:hidden text-gray-400 hover:text-gray-800 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"

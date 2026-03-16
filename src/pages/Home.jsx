@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { ArrowRight, CheckCircle2, Medal, Briefcase, Calculator, Building, LayoutTemplate, PenTool, CheckCircle, Star } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Medal, Briefcase, Calculator, Building, LayoutTemplate, PenTool, CheckCircle, Star, Trophy, Calendar, Users } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 
@@ -117,33 +117,124 @@ const Home = () => {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-white min-h-[85vh] flex items-center">
-                {/* Mobile Background Image & Overlay */}
-                <div className="absolute inset-0 md:hidden z-0">
-                    <img src="/images/project_2026-02-25_11.23.42_AM_1.jpeg" alt="Construction Site" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0" style={{ backgroundColor: 'rgba(11, 61, 145, 0.75)' }}></div>
+            <section className="relative overflow-hidden bg-[#0E2C48] lg:bg-[#FAFBFA] min-h-[85vh] lg:min-h-[90vh] flex flex-col justify-center pt-[100px] pb-[60px] lg:justify-start lg:pt-[40px] lg:pb-[120px]">
+                {/* Mobile Full Cover Background */}
+                <div className="absolute inset-0 z-0 lg:hidden">
+                    <img src="/images/project_2026-02-25_11.23.42_AM_1.webp" className="w-full h-full object-cover object-center" alt="Modern Luxury Home Construction Background" />
+                    <div className="absolute inset-0 bg-[#0E2C48]/80 mix-blend-multiply"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E2C48] via-[#0E2C48]/40 to-transparent"></div>
                 </div>
 
-                {/* Subtle Grid Background (Desktop only) */}
-                <div className="hidden md:block absolute inset-0 hero-bg-grid z-0 pointer-events-none"></div>
+                {/* Subtle Grid Background (Desktop) */}
+                <div
+                    className="absolute inset-0 z-0 pointer-events-none opacity-[0.8] hidden lg:block"
+                    style={{
+                        backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.06) 1px, transparent 1px)',
+                        backgroundSize: '40px 40px',
+                        maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
+                    }}
+                ></div>
 
-                <div className="container mx-auto px-6 grid md:grid-cols-2 items-center gap-12 relative z-10 py-[120px] md:py-0">
-                    {/* Left Text */}
-                    <div className="max-w-2xl text-left flex flex-col items-start w-full">
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white md:text-gray-900 leading-[1.2] mb-6 drop-shadow-lg md:drop-shadow-none">
-                            Quality Construction, <br className="hidden md:block" />Honest Service, <br className="hidden md:block" />Great Value
+                {/* Soft Radial Gradient Glow (Desktop) */}
+                <div className="absolute top-[30%] left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white rounded-full blur-[100px] opacity-70 pointer-events-none z-0 hidden lg:block"></div>
+
+                <div className="w-full max-w-[1240px] mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center lg:items-start gap-[40px] lg:gap-[80px]">
+                    {/* Left Text Content */}
+                    <div className="w-full lg:w-[50%] flex flex-col items-start lg:pt-0">
+                        {/* Pill Badge */}
+                        <div className="inline-flex items-center px-[16px] py-[6px] rounded-full bg-white/20 lg:bg-[#F3F4F6] border border-white/30 lg:border-gray-200 text-[11px] font-bold text-white lg:text-gray-600 uppercase tracking-widest mb-[16px] lg:mb-[24px] backdrop-blur-sm lg:backdrop-blur-none">
+                            Premium Residential Builders
+                        </div>
+
+                        {/* Main Headline */}
+                        <h1 className="text-[44px] sm:text-[54px] lg:text-[62px] font-bold text-white lg:text-[#0E2C48] leading-[1.1] tracking-tight drop-shadow-md lg:drop-shadow-none">
+                            Building Your <br className="hidden md:block" />
+                            <span className="text-gray-200 lg:text-[#9CA3AF]">Dream Home</span> <br className="hidden md:block" />
+                            With Precision <br className="hidden md:block" />
+                            & Trust
                         </h1>
-                        <p className="text-lg md:text-xl text-gray-200 md:text-gray-500 mb-8 font-medium max-w-lg">
-                            We offer End to End Construction Services For Every Budget !!!
+
+                        {/* Subtext */}
+                        <p className="text-[17px] sm:text-[18px] text-gray-200 lg:text-[#6B7280] mt-[24px] max-w-[480px] leading-[1.6] font-medium drop-shadow-md lg:drop-shadow-none">
+                            End-to-end residential construction solutions crafted with transparency, quality, and affordability. We turn architectural blueprints into living realities.
                         </p>
-                        <Link to="/about" className="bg-white text-[#0B3D91] md:bg-accent md:text-white px-8 py-4 rounded-md font-bold hover:bg-gray-100 md:hover:bg-[#113250] transition shadow-lg hover:shadow-xl inline-flex items-center gap-3">
-                            Discover More <ArrowRight size={20} />
-                        </Link>
+
+                        {/* CTA Buttons - Stacked on mobile */}
+                        <div className="flex flex-col sm:flex-row items-center gap-[16px] mt-[36px] w-full">
+                            <Link to="/consultation" className="w-full sm:w-auto bg-white lg:bg-[#0E2C48] text-[#0E2C48] lg:text-white px-[32px] h-[54px] rounded-[10px] flex items-center justify-center font-bold hover:bg-gray-100 lg:hover:bg-[#113250] transition-all duration-300 shadow-[0_8px_20px_rgba(0,0,0,0.15)] lg:shadow-[0_8px_20px_rgba(14,44,72,0.2)] hover:-translate-y-1 text-[16px]">
+                                Get Free Consultation
+                            </Link>
+                            <Link to="/works" className="flex w-full sm:w-auto bg-transparent text-white lg:text-[#0E2C48] border-2 border-white lg:border-[#0E2C48] px-[32px] h-[54px] rounded-[10px] items-center justify-center font-bold hover:bg-white lg:hover:bg-[#0E2C48] hover:text-[#0E2C48] lg:hover:text-white transition-all duration-300 text-[16px] hover:-translate-y-1">
+                                View Our Projects
+                            </Link>
+                        </div>
                     </div>
 
-                    {/* Right Image/Illustration Area (Desktop) */}
-                    <div className="hidden md:flex relative w-full h-[500px] lg:h-[600px] justify-center items-center">
-                        <img src="/images/project_2026-02-25_11.23.42_AM_1.jpeg" alt="Construction Illustration" className="max-w-full max-h-full object-cover rounded-3xl shadow-xl border-4 border-white transform rotate-2" />
+                    {/* Right Image Column (Content stacked on mobile) */}
+                    <div className="flex w-full lg:w-[50%] flex-col items-center mt-[40px] lg:mt-0">
+                        {/* Image Wrapper structure */}
+                        <div className="relative w-full md:max-w-[560px]">
+                            {/* Main Image Container (Hidden on mobile as it is now the background) */}
+                            <div className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.12)] bg-white z-10 hidden lg:flex">
+                                <picture className="w-full h-full block">
+                                    <source media="(min-width: 768px)" srcSet="/images/project_2026-02-25_11.23.42_AM_1.webp" />
+                                    <img src="/images/project_2026-02-25_11.23.40_AM.webp" className="w-full h-full object-cover object-center transform hover:scale-[1.03] transition-transform duration-[1.5s] ease-in-out" alt="Modern Luxury Home Construction" />
+                                </picture>
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/10 via-transparent to-transparent pointer-events-none"></div>
+                            </div>
+
+                            {/* Floating Card 1: Top Left (Floating on Desktop, Stacked on Mobile) */}
+                            <div className="md:absolute static top-[20px] md:top-[40px] left-[10px] md:left-[-30px] lg:left-[-40px] z-20 w-full md:w-[220px] bg-white rounded-[16px] p-[12px_16px] md:p-[16px_20px] shadow-[0_10px_20px_rgba(0,0,0,0.06)] md:shadow-[0_20px_40px_rgba(0,0,0,0.08)] flex items-center gap-[12px] hover:-translate-y-1 md:hover:-translate-y-2 transition-transform duration-300 mb-4 md:mb-0">
+                                <div className="w-[36px] md:w-[40px] h-[36px] md:h-[40px] flex-shrink-0 bg-[#F8F9FA] rounded-full flex items-center justify-center">
+                                    <Trophy className="text-[#111827]" size={16} md:size={18} strokeWidth={2.5} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[16px] md:text-[18px] font-black text-[#111827] leading-tight truncate">30+</div>
+                                    <div className="text-[11px] md:text-[12px] text-[#6B7280] font-semibold truncate mt-0.5">Projects Completed</div>
+                                </div>
+                            </div>
+
+                            {/* Floating Card 2: Mid Right (Floating on Desktop, Stacked on Mobile) */}
+                            <div className="md:absolute static top-[50%] right-[10px] md:right-[-30px] lg:right-[-40px] md:-translate-y-1/2 z-20 w-full md:w-[220px] bg-white rounded-[16px] p-[12px_16px] md:p-[16px_20px] shadow-[0_10px_20px_rgba(0,0,0,0.06)] md:shadow-[0_20px_40px_rgba(0,0,0,0.08)] flex items-center gap-[12px] hover:-translate-y-1 md:hover:-translate-y-2 transition-transform duration-300 mb-4 md:mb-0">
+                                <div className="w-[36px] md:w-[40px] h-[36px] md:h-[40px] flex-shrink-0 bg-[#F8F9FA] rounded-full flex items-center justify-center">
+                                    <Calendar className="text-[#111827]" size={16} md:size={18} strokeWidth={2.5} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[16px] md:text-[18px] font-black text-[#111827] leading-tight truncate">6+</div>
+                                    <div className="text-[11px] md:text-[12px] text-[#6B7280] font-semibold truncate mt-0.5">Years Experience</div>
+                                </div>
+                            </div>
+
+                            {/* Floating Card 3: Bottom Center (Floating on Desktop, Stacked on Mobile) */}
+                            <div className="md:absolute static bottom-[-20px] md:bottom-[-30px] left-[50%] md:-translate-x-1/2 z-20 w-full md:w-[220px] bg-white rounded-[16px] p-[12px_16px] md:p-[16px_20px] shadow-[0_10px_20px_rgba(0,0,0,0.06)] md:shadow-[0_20px_40px_rgba(0,0,0,0.08)] flex items-center gap-[12px] hover:-translate-y-1 md:hover:-translate-y-2 transition-transform duration-300">
+                                <div className="w-[36px] md:w-[40px] h-[36px] md:h-[40px] flex-shrink-0 bg-[#F8F9FA] rounded-full flex items-center justify-center">
+                                    <Users className="text-[#111827]" size={16} md:size={18} strokeWidth={2.5} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[16px] md:text-[18px] font-black text-[#111827] leading-tight truncate">100%</div>
+                                    <div className="text-[11px] md:text-[12px] text-[#6B7280] font-semibold truncate mt-0.5">Client Satisfaction</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Trust Section acting as social proof below layout */}
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-[12px] sm:gap-[16px] mt-[40px] md:mt-[48px] lg:mt-[56px] w-full text-center sm:text-left pb-8 lg:pb-0">
+                            <div className="flex -space-x-[12px]">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" className="w-[42px] h-[42px] rounded-full border-2 border-[#113250] lg:border-[#FAFBFA] shadow-sm object-cover" alt="Happy Homeowner" />
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" className="w-[42px] h-[42px] rounded-full border-2 border-[#113250] lg:border-[#FAFBFA] shadow-sm object-cover" alt="Happy Homeowner" />
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" className="w-[42px] h-[42px] rounded-full border-2 border-[#113250] lg:border-[#FAFBFA] shadow-sm object-cover" alt="Happy Homeowner" />
+                            </div>
+                            <div className="flex flex-col items-center sm:items-start text-left">
+                                <span className="text-[14px] font-extrabold text-white lg:text-[#111827] mb-[2px]">Trusted by 30+ Happy Homeowners</span>
+                                <div className="flex items-center justify-center sm:justify-start gap-[6px]">
+                                    <div className="flex items-center">
+                                        {[...Array(5)].map((_, i) => <Star key={i} size={14} className="fill-[#FBBF24] text-[#FBBF24]" />)}
+                                    </div>
+                                    <span className="text-[12px] text-gray-200 lg:text-[#6B7280] font-bold">Excellent (4.9/5)</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -187,7 +278,7 @@ const Home = () => {
                             {/* Main Image Container */}
                             <div className="relative rounded-[1.5rem] overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.1)]">
                                 <img
-                                    src="/images/project_2026-02-25_11.23.41_AM_1.jpeg"
+                                    src="/images/project_2026-02-25_11.23.41_AM_1.webp"
                                     alt="Luxury Construction & Interiors"
                                     className="w-full object-cover transform scale-105 group-hover:scale-100 transition duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
                                 />
@@ -305,7 +396,7 @@ const Home = () => {
 
                                         {/* Hover Graphics */}
                                         <div className={`absolute inset-0 z-0 transition-opacity duration-300 pointer-events-none lg:group-hover:opacity-100 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-                                            <img src="/images/project_2026-02-25_11.23.39_AM.jpeg" alt="background" className="w-full h-full object-cover" />
+                                            <img src="/images/project_2026-02-25_11.23.39_AM.webp" alt="background" className="w-full h-full object-cover" />
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#0E2C48]/95 to-[#184166]/95"></div>
                                         </div>
 
@@ -370,7 +461,7 @@ const Home = () => {
                                     >
                                         <Link to={`/project/${project.id}`} className="absolute inset-0 z-0 hidden lg:block" />
 
-                                        <img src={project.images?.[0] || '/placeholder.png'} alt={project.title} loading="lazy" className={`absolute inset-0 w-full h-full object-cover transform transition-transform duration-[400ms] ease-out lg:group-hover:scale-105 ${isActive ? 'scale-105' : 'scale-100'}`} />
+                                        <img src={project.images?.[0] || '/placeholder.webp'} alt={project.title} loading="lazy" className={`absolute inset-0 w-full h-full object-cover transform transition-transform duration-[400ms] ease-out lg:group-hover:scale-105 ${isActive ? 'scale-105' : 'scale-100'}`} />
 
                                         <div className={`absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.75)] via-[rgba(0,0,0,0.4)] to-transparent pointer-events-none transition-opacity duration-[400ms] lg:group-hover:opacity-100 ${isActive ? 'opacity-100' : 'opacity-0'}`}></div>
 

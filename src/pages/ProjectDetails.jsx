@@ -58,7 +58,7 @@ const ProjectDetails = () => {
             <section className="relative h-[60vh] lg:h-[75vh] w-full mt-0">
                 <div className="absolute inset-0 bg-primary/40 z-10"></div>
                 <img
-                    src={project.images?.[0] || '/placeholder.png'}
+                    src={project.images?.[0] || '/placeholder.webp'}
                     alt={project.title}
                     className="w-full h-full object-cover"
                 />

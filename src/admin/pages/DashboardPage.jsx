@@ -70,15 +70,6 @@ const DashboardPage = () => {
                 ))}
             </div>
 
-            {/* Recent Activity / Content block */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <h3 className="text-xl font-bold text-primary mb-6 flex items-center gap-2">
-                    <LayoutDashboard size={20} /> Supabase Integration Active
-                </h3>
-                <p className="text-gray-600 leading-relaxed font-medium">
-                    This automated dashboard interfaces directly with your Supabase BaaS implementation. Utilize the sidebar tabs to navigate and execute CRUD operations against your cloud database and storage buckets.
-                </p>
-            </div>
         </div>
     );
 };

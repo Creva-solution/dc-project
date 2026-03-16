@@ -216,7 +216,7 @@ const CostCalculator = () => {
         };
 
         const img = new Image();
-        img.src = '/images/dc-logo.svg';
+        img.src = '/logo.svg';
 
         img.onload = () => {
             try {

@@ -46,31 +46,31 @@ const stages = [
         num: '01',
         title: 'Planning & Soil Testing',
         desc: 'Before breaking ground, we conduct comprehensive soil tests and architectural planning. This crucial stage ensures structural integrity, perfect spatial design, and lays the foundation for a flawless execution.',
-        image: '/images/stage1.png'
+        image: '/images/stage1.webp'
     },
     {
         num: '02',
         title: 'BOQ & Budget Finalization',
         desc: 'Transparency is our core value. We prepare a detailed Bill of Quantities (BOQ), ensuring every material cost and labor charge is accounted for, eliminating hidden surprises and finalizing a budget that respects your investment.',
-        image: '/images/stage2.png'
+        image: '/images/stage2.webp'
     },
     {
         num: '03',
         title: 'Construction Execution',
         desc: 'Watch your dream take shape as our skilled professionals execute the build. From foundational work to structural framing, we employ modern techniques and strict safety standards to bring the blueprints to life.',
-        image: '/images/stage3.png'
+        image: '/images/stage3.webp'
     },
     {
         num: '04',
         title: 'Quality Monitoring',
         desc: 'Quality is non-negotiable. Our dedicated civil engineers rigorously inspect concrete strength, structural alignment, and material standards at every step to guarantee maximum durability and perfection.',
-        image: '/images/stage4.png'
+        image: '/images/stage4.webp'
     },
     {
         num: '05',
         title: 'Final Handover',
         desc: 'The moment you’ve been waiting for. We perform a deep clean, test all pipelines and electricals, and conduct a comprehensive final walkthrough before handing over the keys to your beautifully finished dream home.',
-        image: '/images/stage5.png'
+        image: '/images/stage5.webp'
     }
 ];
 

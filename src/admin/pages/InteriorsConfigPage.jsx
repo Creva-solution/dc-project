@@ -56,17 +56,56 @@ const InteriorsConfigPage = () => {
         setIsModalOpen(true);
     };
 
+    const compressAndConvertToWebP = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_WIDTH = 1600;
+
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) return reject(new Error('Canvas is empty'));
+                            resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", { type: 'image/webp' }));
+                        },
+                        'image/webp',
+                        0.75
+                    );
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    };
+
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         try {
             setUploading(true);
-            const fileExt = file.name.split('.').pop();
-            const fileName = `interior_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const webpFile = await compressAndConvertToWebP(file);
+            const fileName = `interior_${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
             const filePath = `interiors/${fileName}`;
 
-            const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
+            const { error: uploadError } = await supabase.storage.from('images').upload(filePath, webpFile);
             if (uploadError) throw uploadError;
 
             const { data } = supabase.storage.from('images').getPublicUrl(filePath);
@@ -373,6 +412,7 @@ const InteriorsConfigPage = () => {
                                                     className="flex-1 font-bold text-primary bg-transparent focus:bg-white px-2 py-1 rounded focus:outline-none focus:ring-1 focus:ring-primary/20"
                                                     placeholder="Section Title (e.g. Plywood)"
                                                 />
+                                                <button onClick={() => addItem(sIdx)} type="button" className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-green-600 hover:text-green-800 border border-gray-200" title="Add Bullet Item"><Plus size={14} /></button>
                                                 <button onClick={() => removeSection(sIdx)} type="button" className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-red-400 hover:text-red-600 border border-gray-200" title="Delete Section"><Trash2 size={14} /></button>
                                             </div>
 

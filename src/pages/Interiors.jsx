@@ -32,7 +32,7 @@ const PackageCard = ({ image_url, name, price, price_suffix, sections }) => {
     return (
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
             <div className="h-64 overflow-hidden relative shrink-0">
-                <img src={image_url || '/placeholder.png'} alt={name} className="w-full h-full object-cover" />
+                <img src={image_url || '/placeholder.webp'} alt={name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8">
                     <h3 className="text-3xl font-black text-white">{name}</h3>
                 </div>
@@ -138,7 +138,7 @@ const Interiors = () => {
         <>
             {/* Top Banner with Breadcrumbs */}
             <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.jpeg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Interiors</h1>
                     <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-300">

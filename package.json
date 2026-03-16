@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
     "@tailwindcss/vite": "^4.2.1",
+    "browser-image-compression": "^2.0.2",
     "esbuild": "^0.27.3",
     "jspdf": "^4.2.0",
     "jspdf-autotable": "^5.0.7",
@@ -31,7 +32,10 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "glob": "^13.0.6",
     "globals": "^16.5.0",
+    "replace-in-file": "^8.4.0",
+    "sharp": "^0.34.5",
     "vite": "^7.3.1"
   }
 }

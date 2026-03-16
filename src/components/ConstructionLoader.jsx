@@ -89,11 +89,15 @@ const ConstructionLoader = () => {
     return (
         <div className={`construction-loader-container ${isFadingOut ? 'fade-out' : ''}`}>
             {imagesLoaded && (
-                <img
-                    src={SVG_FRAMES[currentFrame]}
-                    alt="DC Constructions Loading Animation"
-                    className="construction-loader-image"
-                />
+                <div className="relative inline-flex justify-center items-center">
+                    <img
+                        src={SVG_FRAMES[currentFrame]}
+                        alt="DC Constructions Loading Animation"
+                        className="construction-loader-image"
+                    />
+                    {/* Spark overlaid directly ON the logo graphic's surface */}
+                    <div className="construction-glow-spark"></div>
+                </div>
             )}
         </div>
     );

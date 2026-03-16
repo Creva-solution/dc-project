@@ -56,12 +56,12 @@ const HomeConfigPage = () => {
 // ==========================================
 const LogoManagementTab = () => {
     const [uploading, setUploading] = useState(false);
-    const [logoPreview, setLogoPreview] = useState('/images/dc-logo.svg'); // Default fallback
+    const [logoPreview, setLogoPreview] = useState('/logo.svg'); // Default fallback
     const fileRef = useRef(null);
 
     // Try fetching the logo from Supabase Storage if it exists
     useEffect(() => {
-        const { data } = supabase.storage.from('images').getPublicUrl('branding/logo.png');
+        const { data } = supabase.storage.from('images').getPublicUrl('branding/logo.webp');
         if (data && data.publicUrl) {
             // Basic check: we won't know if the file exists just from getPublicUrl, but we can try loading it.
             // To keep it simple, we just assume the default logo path unless updated online.
@@ -75,14 +75,14 @@ const LogoManagementTab = () => {
         try {
             setUploading(true);
 
-            // Upload to Supabase replacing the generic "branding/logo.png"
+            // Upload to Supabase replacing the generic "branding/logo.webp"
             const { error } = await supabase.storage
                 .from('images')
-                .upload('branding/logo.png', file, { upsert: true, cacheControl: '0' });
+                .upload('branding/logo.webp', file, { upsert: true, cacheControl: '0' });
 
             if (error) throw error;
 
-            const { data } = supabase.storage.from('images').getPublicUrl('branding/logo.png');
+            const { data } = supabase.storage.from('images').getPublicUrl('branding/logo.webp');
 
             // Generate a random query param to force React to bypass image caching
             setLogoPreview(`${data.publicUrl}?t=${new Date().getTime()}`);
@@ -119,7 +119,7 @@ const LogoManagementTab = () => {
                         {uploading ? <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" /> : <UploadCloud size={20} />}
                         {uploading ? 'Processing File...' : 'Select & Replace Logo'}
                     </button>
-                    <input type="file" ref={fileRef} accept=".png,.svg,.jpg,.jpeg" onChange={handleUpload} className="hidden" />
+                    <input type="file" ref={fileRef} accept=".png,.svg,.jpg,.jpeg,.webp" onChange={handleUpload} className="hidden" />
                 </div>
             </div>
         </div>
@@ -601,7 +601,7 @@ const PartnerLogosTab = () => {
                                     </div>
                                     <label className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition shrink-0">
                                         Choose File
-                                        <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange} className="hidden" />
+                                        <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={handleFileChange} className="hidden" />
                                     </label>
                                 </div>
                                 <p className="text-xs text-gray-500 mt-2">Max 2MB. Image converted to WebP (max 600px).</p>

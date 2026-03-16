@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
-import { Target, Crown, ShieldCheck, Plus, Edit2, Trash2, X, Check, XCircle, GripVertical, Save, Minus, Building2 } from 'lucide-react';
+import { Target, Crown, ShieldCheck, Plus, Edit2, Trash2, X, Check, XCircle, GripVertical, Save, Minus, Building2, FileSpreadsheet, ClipboardPaste } from 'lucide-react';
 
 const ArchitecturalConfigPage = () => {
     const [packages, setPackages] = useState([]);
@@ -11,6 +11,9 @@ const ArchitecturalConfigPage = () => {
     // For Feature Values local edits
     const [localFeatureValues, setLocalFeatureValues] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isBulkModal, setIsBulkModal] = useState(false);
+    const [bulkData, setBulkData] = useState('');
+    const [selectedIds, setSelectedIds] = useState([]);
 
     const fetchData = async () => {
         try {
@@ -102,6 +105,32 @@ const ArchitecturalConfigPage = () => {
         else fetchData();
     };
 
+    const handleBulkDelete = async () => {
+        if (selectedIds.length === 0) return;
+        if (!window.confirm(`Delete ${selectedIds.length} selected items? This will remove all associated values.`)) return;
+
+        try {
+            setLoading(true);
+            const { error } = await supabase.from('arch_features').delete().in('id', selectedIds);
+            if (error) throw error;
+            toast.success("Selected items deleted!");
+            setSelectedIds([]);
+            fetchData();
+        } catch (err) {
+            toast.error(err.message);
+            setLoading(false);
+        }
+    };
+
+    const toggleSelect = (id) => {
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.length === features.length) setSelectedIds([]);
+        else setSelectedIds(features.map(f => f.id));
+    };
+
     // --- FEATURE VALUES EDIT ---
     const handleLocalValueChange = (pkgId, featId, type, value) => {
         setLocalFeatureValues(prev => {
@@ -140,6 +169,92 @@ const ArchitecturalConfigPage = () => {
         }
     };
 
+    const handleBulkImport = async () => {
+        try {
+            if (!bulkData.trim()) return;
+            setLoading(true);
+            const lines = bulkData.split('\n').filter(l => l.trim());
+            let currentOrder = features.length > 0 ? Math.max(...features.map(f => f.display_order)) + 1 : 1;
+
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                // Skip Excel headers that match package names or generic "Feature"
+                if (trimmedLine.toLowerCase().startsWith('feature\t') || trimmedLine.toLowerCase() === 'feature') continue;
+
+                const headingMatch = trimmedLine.match(/^(\d+)\.\s*(.*)/);
+                if (headingMatch) {
+                    const title = headingMatch[2].trim();
+                    const { data: feat, error } = await supabase.from('arch_features').insert({
+                        title,
+                        type: 'heading',
+                        display_order: currentOrder++
+                    }).select().single();
+                    if (error) throw error;
+                } else {
+                    const parts = line.split('\t').map(p => p.trim());
+                    if (parts.length === 0 || !parts[0]) continue;
+
+                    const title = parts[0];
+                    const packageValues = parts.slice(1);
+
+                    // Detect if it should be text mode
+                    const isTextMode = packageValues.some(v => {
+                        const low = v.toLowerCase();
+                        return v && !['tick', '✔', '✅', 'yes', 'y', '-', 'dash', '—', 'no', 'n', '/', 'basic', 'premium', 'luxury'].includes(low);
+                    });
+
+                    const { data: feat, error: featError } = await supabase.from('arch_features').insert({
+                        title,
+                        type: 'feature',
+                        value_mode: isTextMode ? 'text' : 'boolean',
+                        display_order: currentOrder++
+                    }).select().single();
+                    if (featError) throw featError;
+
+                    if (packageValues.length > 0) {
+                        const valuesToInsert = packageValues.map((val, idx) => {
+                            const pkg = packages[idx];
+                            if (!pkg) return null;
+
+                            let type = 'dash';
+                            let value = '';
+
+                            const lowVal = val.toLowerCase();
+                            if (['tick', '✔', '✅', 'yes', 'y'].includes(lowVal)) {
+                                type = 'tick';
+                            } else if (['-', 'dash', '—', 'no', 'n', '/', ''].includes(lowVal)) {
+                                type = 'dash';
+                            } else {
+                                type = 'text';
+                                value = val;
+                            }
+
+                            return {
+                                package_id: pkg.id,
+                                feature_id: feat.id,
+                                type,
+                                value
+                            };
+                        }).filter(Boolean);
+
+                        if (valuesToInsert.length > 0) {
+                            const { error: valError } = await supabase.from('arch_feature_values').insert(valuesToInsert);
+                            if (valError) throw valError;
+                        }
+                    }
+                }
+            }
+            toast.success("Bulk Import Successful!");
+            setIsBulkModal(false);
+            setBulkData('');
+            fetchData();
+        } catch (err) {
+            toast.error("Import Error: " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const colorSets = [
         { icon: ShieldCheck, color: 'text-blue-600', bgColor: 'bg-blue-50', bgHighlight: 'lg:bg-blue-50/20' },
         { icon: Target, color: 'text-accent', bgColor: 'bg-red-50', bgHighlight: 'lg:bg-red-50/20' },
@@ -170,9 +285,17 @@ const ArchitecturalConfigPage = () => {
                             <button onClick={() => { setFeatForm({ id: null, title: '', type: 'feature', value_mode: 'boolean', display_order: features.length + 1 }); setIsFeatModal(true); }} className="bg-white border border-gray-200 text-gray-700 font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-50 text-sm shadow-sm transition-colors">
                                 <Plus size={16} /> Add Feature Row
                             </button>
+                            <button onClick={() => { setBulkData(''); setIsBulkModal(true); }} className="bg-emerald-50 border border-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-emerald-100 text-sm shadow-sm transition-colors">
+                                <FileSpreadsheet size={16} /> Bulk Excel Add
+                            </button>
                             <button onClick={saveFeatureValues} className="bg-primary text-white font-bold px-6 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-secondary transition-all text-sm ml-auto md:ml-0">
                                 <Save size={16} /> Save All Layout
                             </button>
+                            {selectedIds.length > 0 && (
+                                <button onClick={handleBulkDelete} className="bg-red-500 text-white font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-red-600 transition-all text-sm">
+                                    <Trash2 size={16} /> Delete Selected ({selectedIds.length})
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -187,8 +310,18 @@ const ArchitecturalConfigPage = () => {
                                 <thead>
                                     <tr>
                                         <th className="p-6 border-b border-gray-100 bg-white align-bottom w-1/4 min-w-[300px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] z-20 relative sticky left-0">
-                                            <h3 className="text-xl font-bold text-primary">Features Outline</h3>
-                                            <p className="text-sm font-normal text-gray-500 mt-1">Configure rows horizontally</p>
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="checkbox"
+                                                    className="w-4 h-4 rounded accent-primary cursor-pointer"
+                                                    checked={selectedIds.length === features.length && features.length > 0}
+                                                    onChange={toggleSelectAll}
+                                                />
+                                                <div>
+                                                    <h3 className="text-xl font-bold text-primary">Features Outline</h3>
+                                                    <p className="text-sm font-normal text-gray-500 mt-1">Configure rows horizontally</p>
+                                                </div>
+                                            </div>
                                         </th>
                                         {packages.map((pkg, idx) => {
                                             const colorSet = colorSets[idx % colorSets.length];
@@ -221,9 +354,25 @@ const ArchitecturalConfigPage = () => {
                                             return (
                                                 <tr key={feat.id} className="bg-gray-100/80 group">
                                                     <td colSpan={packages.length + 1} className="p-4 px-6 border-b border-gray-200 font-black text-gray-800 text-sm uppercase tracking-wider relative group/feat">
-                                                        <div className="flex justify-between items-center sticky left-0 max-w-max">
+                                                        <div className="flex justify-between items-center sticky left-0 max-w-max gap-3">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="w-4 h-4 rounded accent-primary cursor-pointer"
+                                                                checked={selectedIds.includes(feat.id)}
+                                                                onChange={() => toggleSelect(feat.id)}
+                                                            />
                                                             <span>{feat.title}</span>
                                                             <div className="flex gap-1 opacity-0 group-hover/feat:opacity-100 transition-opacity ml-6">
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setFeatForm({ id: null, title: '', type: 'feature', value_mode: 'boolean', display_order: feat.display_order + 1 });
+                                                                        setIsFeatModal(true);
+                                                                    }}
+                                                                    className="p-1 text-gray-500 hover:text-green-600 hover:bg-white rounded"
+                                                                    title="Add Item to this section"
+                                                                >
+                                                                    <Plus size={14} />
+                                                                </button>
                                                                 <button onClick={() => { setFeatForm(feat); setIsFeatModal(true); }} className="p-1 text-gray-500 hover:text-primary hover:bg-white rounded"><Edit2 size={14} /></button>
                                                                 <button onClick={() => deleteFeature(feat.id)} className="p-1 text-gray-500 hover:text-red-500 hover:bg-white rounded"><Trash2 size={14} /></button>
                                                             </div>
@@ -236,8 +385,16 @@ const ArchitecturalConfigPage = () => {
                                         return (
                                             <tr key={feat.id} className="hover:bg-gray-50/50 transition-colors group">
                                                 <td className="p-4 px-6 border-b border-gray-100 font-bold text-gray-700 text-sm bg-white group-hover:bg-gray-50/50 relative z-10 sticky left-0 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
-                                                    <div className="flex justify-between items-center group/feat">
-                                                        <span>{feat.title}</span>
+                                                    <div className="flex justify-between items-center group/feat gap-3">
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="w-4 h-4 rounded accent-primary cursor-pointer"
+                                                                checked={selectedIds.includes(feat.id)}
+                                                                onChange={() => toggleSelect(feat.id)}
+                                                            />
+                                                            <span>{feat.title}</span>
+                                                        </div>
                                                         <div className="flex gap-1 opacity-0 group-hover/feat:opacity-100 transition-opacity">
                                                             <button onClick={() => { setFeatForm(feat); setIsFeatModal(true); }} className="p-1 text-gray-400 hover:text-primary hover:bg-white rounded"><Edit2 size={14} /></button>
                                                             <button onClick={() => deleteFeature(feat.id)} className="p-1 text-gray-400 hover:text-red-500 hover:bg-white rounded"><Trash2 size={14} /></button>
@@ -344,6 +501,64 @@ const ArchitecturalConfigPage = () => {
                             <button type="submit" className="px-5 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-md hover:bg-secondary">Save Feature</button>
                         </div>
                     </form>
+                </div>
+            )}
+
+            {/* BULK IMPORT MODAL */}
+            {isBulkModal && (
+                <div className="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-[#f8fafc]">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                                    <FileSpreadsheet size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-gray-900 text-lg">Bulk Excel Spreadsheet Import</h3>
+                                    <p className="text-xs text-gray-500 font-medium">Paste rows directly from your Excel sheets.</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsBulkModal(false)} className="text-gray-400 hover:text-gray-800 transition"><X size={24} /></button>
+                        </div>
+                        
+                        <div className="p-6 flex-1 overflow-y-auto space-y-4">
+                            <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl flex gap-3">
+                                <div className="text-amber-600 shrink-0"><Check size={20} /></div>
+                                <div className="text-xs text-amber-800 leading-relaxed font-medium">
+                                    <p className="font-bold mb-1">Copying Rules:</p>
+                                    <ul className="list-disc pl-4 space-y-1">
+                                        <li>Lines starting with <span className="font-black">1.</span> (or any number) become <strong>headings</strong>.</li>
+                                        <li>Rows with tabs (copied from Excel) become <strong>feature rows</strong>.</li>
+                                        <li>Column 1 is the title, subsequent columns match your active packages.</li>
+                                        <li>Use <span className="font-bold">✔</span> or <span className="font-bold">tick</span> for checkmarks, <span className="font-bold">-</span> for dashes.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="relative">
+                                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Data Input Area</label>
+                                <textarea
+                                    className="w-full h-80 p-4 font-mono text-sm border border-gray-200 rounded-xl focus:border-emerald-500 outline-none shadow-inner bg-gray-50/50"
+                                    placeholder={`1. Structure\nSteel\tGBR/Pulkit\tARS Steel\tTATA\nRCC Grade\tM20/M25\tM20/M25\tM25`}
+                                    value={bulkData}
+                                    onChange={(e) => setBulkData(e.target.value)}
+                                ></textarea>
+                                <div className="absolute top-8 right-2 p-2 pointer-events-none opacity-20">
+                                    <ClipboardPaste size={64} className="text-gray-400" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 border-t border-gray-100 bg-white grid grid-cols-2 gap-3 shrink-0">
+                            <button onClick={() => setIsBulkModal(false)} className="px-5 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition">Discard</button>
+                            <button 
+                                onClick={handleBulkImport} 
+                                className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 transition"
+                            >
+                                <FileSpreadsheet size={18} /> Parse & Inject into Matrix
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

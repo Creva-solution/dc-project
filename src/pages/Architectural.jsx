@@ -93,7 +93,7 @@ const Architectural = () => {
         <>
             {/* Top Banner with Breadcrumbs */}
             <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.jpeg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Architectural Packages</h1>
                     <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-300">

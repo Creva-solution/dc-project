@@ -44,7 +44,7 @@ const LoginPage = () => {
 
             {/* Logo area */}
             <div className="mb-10 text-center animate-fade-in">
-                <img src="/images/dc-logo.svg" alt="DC Constructions Logo" className="h-[60px] mx-auto mb-4 drop-shadow-sm" />
+                <img src="/logo.svg" alt="DC Constructions Logo" className="h-[60px] mx-auto mb-4 drop-shadow-sm" />
                 <h1 className="text-2xl font-black text-primary tracking-tight">Admin Dashboard Core</h1>
             </div>
 

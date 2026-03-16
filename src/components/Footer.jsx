@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Youtube } from 'lucide-react';
 
 const Footer = () => {
+    const year = new Date().getFullYear();
+
     return (
         <footer className="bg-[#F5F7FA] text-[#333333] border-t-[6px] border-[#0B3D91]">
             <div className="pt-16 pb-12">
@@ -58,10 +60,10 @@ const Footer = () => {
                     {/* Left Side: Logo & Copyright */}
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                         <Link to="/">
-                            <img src="/images/dc-logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
+                            <img src="/logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
                         </Link>
                         <span className="hidden md:inline-block text-gray-400">|</span>
-                        <p className="text-gray-500 font-normal">&copy; {new Date().getFullYear()} DC Constructions. All Rights Reserved.</p>
+                        <p className="text-gray-500 font-normal">&copy; {year} DC Constructions. All Rights Reserved.</p>
                     </div>
 
                     {/* Right Side: Social Icons & Links */}

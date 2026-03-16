@@ -31,7 +31,7 @@ const About = () => {
         <>
             {/* Top Banner with Breadcrumbs */}
             <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.jpeg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">About Us</h1>
                     <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-300">
@@ -73,7 +73,7 @@ const About = () => {
                     {/* Right Side: Image */}
                     <div className="relative">
                         <div className="absolute inset-0 bg-primary translate-x-4 translate-y-4 rounded-xl z-0"></div>
-                        <img src="/images/project_2026-02-25_11.23.40_AM_2.jpeg" alt="DC Constructions Site" className="relative z-10 w-full rounded-xl shadow-xl object-cover h-[500px]" />
+                        <img src="/images/About.webp" alt="DC Constructions Site" className="relative z-10 w-full rounded-xl shadow-xl object-cover h-[500px]" />
 
                         {/* Overlay badge */}
                         <div className="absolute -bottom-8 -left-8 bg-white p-6 rounded-xl shadow-2xl z-20 flex items-center gap-4 border border-gray-100 hidden md:flex">

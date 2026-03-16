@@ -69,7 +69,7 @@ const Works = () => {
                         ) : (
                             filteredProjects.map(project => (
                                 <Link to={`/project/${project.id}`} key={project.id} className="relative group overflow-hidden rounded-[1.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.06)] block w-full aspect-[4/3] bg-primary">
-                                    <img src={project.images?.[0] || '/placeholder.png'} alt={project.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-[400ms] ease-out" />
+                                    <img src={project.images?.[0] || '/placeholder.webp'} alt={project.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-[400ms] ease-out" />
 
                                     {/* Overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.75)] via-[rgba(0,0,0,0.4)] to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-[400ms] pointer-events-none"></div>

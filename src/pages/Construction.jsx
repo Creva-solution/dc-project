@@ -11,41 +11,137 @@ const colorSets = [
     { icon: CheckCircle2, color: 'text-emerald-600', bgColor: 'bg-emerald-50', bgHighlight: 'lg:bg-emerald-50/20' }
 ];
 
-const renderFeatureValue = (val) => {
-    if (!val) return <div className="flex justify-center"><Minus className="text-gray-300" size={20} /></div>;
-    if (val.type === 'tick') return <div className="flex justify-center"><CheckCircle2 className="text-green-500" size={20} /></div>;
-    if (val.type === 'dash') return <div className="flex justify-center"><Minus className="text-gray-300" size={20} /></div>;
-    return <span className="text-sm font-medium text-gray-700">{val.value}</span>;
+
+const CONSTRUCTION_DATA = {
+    packages: [
+        { id: 'standard', name: 'Standard / Basic', price: '₹2250', display_order: 1 },
+        { id: 'premium', name: 'Premium / Elite', price: '₹2550', display_order: 2 },
+        { id: 'luxury', name: 'Luxury', price: '₹3000', display_order: 3 }
+    ],
+    features: [
+        { id: 'de-head', title: 'Design & Engineering', type: 'heading' },
+        { id: 'f1', title: 'Soil Test', values: { standard: '✖', premium: 'tick', luxury: 'tick' } },
+        { id: 'f2', title: 'Borewell Test', values: { standard: '✖', premium: 'tick', luxury: 'tick' } },
+        { id: 'f3', title: '2D Floor Plan', values: { standard: 'tick', premium: 'tick', luxury: 'tick' } },
+        { id: 'f4', title: '3D Elevation', values: { standard: 'Basic', premium: 'Premium', luxury: 'Luxury' } },
+        { id: 'f5', title: 'Structural Design', values: { standard: 'tick', premium: 'tick', luxury: 'tick' } },
+        { id: 'f6', title: 'Electrical Drawing', values: { standard: '✖', premium: 'tick', luxury: 'tick' } },
+
+        { id: 'st-head', title: 'Structure', type: 'heading' },
+        { id: 'f7', title: 'Cement', values: { standard: 'Dalmia / Zuari / Ultratech', premium: 'Same', luxury: 'Same' } },
+        { id: 'f8', title: 'Steel', values: { standard: 'GSK / PWD', premium: 'APS Steel', luxury: 'TATA' } },
+        { id: 'f9', title: 'RCC Grade', values: { standard: 'M20 / M25', premium: 'M20 / M25', luxury: 'M25' } },
+        { id: 'f10', title: 'Foundation', values: { standard: 'Included', premium: 'Included', luxury: 'Included' } },
+        { id: 'f11', title: 'Foundation Waterproofing', values: { standard: '✖', premium: 'Dr Fixit Bitufix', luxury: 'Dr Fixit Bitufix' } },
+
+        { id: 'fs-head', title: 'Floor Structure', type: 'heading' },
+        { id: 'f12', title: 'Floor Height', values: { standard: '3 ft', premium: '3\'6 ft', luxury: '4 ft' } },
+        { id: 'f13', title: 'Parking Height', values: { standard: '10 inch from pavement', premium: 'Same', luxury: 'Same' } },
+        { id: 'f14', title: 'Lintel', values: { standard: 'Through Lintel', premium: 'Through Lintel', luxury: 'Through Lintel' } },
+        { id: 'f15', title: 'Loft', values: { standard: 'One Loft (Bedroom & Kitchen)', premium: 'Same', luxury: 'Same' } },
+        { id: 'f16', title: 'Ceiling Height', values: { standard: '10 ft slab to slab', premium: '10\'6 slab to slab', luxury: '11 ft slab' } },
+        { id: 'f17', title: 'Sand', values: { standard: 'M Sand', premium: 'Same', luxury: 'Same' } },
+        { id: 'f18', title: 'Plastering', values: { standard: 'Waterproof admixture', premium: 'Same', luxury: 'Fibre Reinforced Plastering' } },
+        { id: 'f19', title: 'Brick Work', values: { standard: 'Red Box Bricks', premium: 'Box Finish Red Brick', luxury: 'Wire Cut Bricks' } },
+
+        { id: 'el-head', title: 'Electrical', type: 'heading' },
+        { id: 'f20', title: 'Wiring', values: { standard: 'Orbit / Polycab FRLSH', premium: 'RR / Polycab FRLSH', luxury: 'Polycab FRLSH' } },
+        { id: 'f21', title: 'Switch MCB', values: { standard: 'Legrand / Schneider / Roma', premium: 'Legrand / Schneider', luxury: 'Legrand Schneider Anterior' } },
+        { id: 'f22', title: 'Switch Model', values: { standard: 'Alizy', premium: 'Lyncus', luxury: 'Premium' } },
+        { id: 'f23', title: 'Main Board', values: { standard: 'Wooden Open Type', premium: 'Steel Box', luxury: 'Panel Box' } },
+
+        { id: 'pb-head', title: 'Plumbing', type: 'heading' },
+        { id: 'f24', title: 'CPVC Concealed', values: { standard: 'Ashirvad / Finolex', premium: 'Same', luxury: 'Same' } },
+        { id: 'f25', title: 'Potable Cold Water', values: { standard: 'UPVC', premium: 'Same', luxury: 'Same' } },
+        { id: 'f26', title: 'Grey Water Pipes', values: { standard: 'Neopro / Supreme', premium: 'Finolex', luxury: 'Finolex' } },
+
+        { id: 'kt-head', title: 'Kitchen', type: 'heading' },
+        { id: 'f27', title: 'Wall Tiles', values: { standard: 'upto 2 ft – ₹50', premium: '₹70', luxury: '₹90' } },
+        { id: 'f28', title: 'Flooring', values: { standard: '₹50', premium: '₹70', luxury: '₹90' } },
+        { id: 'f29', title: 'Countertop', values: { standard: 'Granite ₹150', premium: 'Granite ₹180', luxury: 'Granite ₹200' } },
+        { id: 'f30', title: 'Sink', values: { standard: 'SS Sink ₹2000', premium: 'SS Sink or Quartz ₹7500', luxury: 'Quartz ₹12000' } },
+
+        { id: 'bt-head', title: 'Bathroom', type: 'heading' },
+        { id: 'f31', title: 'Wall Tiles', values: { standard: '₹40 upto 7 ft', premium: '₹50 upto 9 ft', luxury: '₹60 upto 10 ft' } },
+        { id: 'f32', title: 'Fittings', values: { standard: 'Parryware / Essco ₹15000', premium: 'Rube / Essco / Jaguar ₹30000', luxury: 'Kohler ₹40000' } },
+
+        { id: 'fl-head', title: 'Flooring', type: 'heading' },
+        { id: 'f33', title: 'Parking', values: { standard: 'Any Tiles ₹40/sqft', premium: 'Kajaria / Johnson ₹60', luxury: 'Simpolo ₹70' } },
+        { id: 'f34', title: 'Living / Bedroom', values: { standard: '₹50', premium: 'Granite ₹180', luxury: 'Granite ₹200' } },
+        { id: 'f35', title: 'Staircase', values: { standard: 'Granite ₹110', premium: 'Granite ₹180', luxury: 'Granite ₹200' } },
+        { id: 'f36', title: 'Balcony', values: { standard: 'Designer Tile ₹50', premium: 'Designer Tile ₹70', luxury: 'Designer Tile ₹90' } },
+
+        { id: 'ut-head', title: 'Utility', type: 'heading' },
+        { id: 'f37', title: 'Flooring', values: { standard: '₹50', premium: '₹70', luxury: '₹90' } },
+        { id: 'f38', title: 'Counter Top', values: { standard: '✖', premium: 'tick', luxury: 'tick' } },
+        { id: 'f39', title: 'CP Fittings', values: { standard: '₹2000', premium: '₹3000', luxury: '₹4000' } },
+        { id: 'f40', title: 'Sink', values: { standard: '✖', premium: 'tick', luxury: 'tick' } },
+
+        { id: 'dj-head', title: 'Doors & Joinery', type: 'heading' },
+        { id: 'f41', title: 'Main Door Frame', values: { standard: 'Neem / Bamboo / Mixed', premium: 'Nimbhar 1st Quality', luxury: 'Nimbhar Premium' } },
+        { id: 'f42', title: 'Door Accessories', values: { standard: 'upto ₹5000', premium: 'upto ₹7000', luxury: 'upto ₹8000' } },
+        { id: 'f43', title: 'Bedroom Door', values: { standard: '3x7', premium: '3x7', luxury: '3x8' } },
+        { id: 'f44', title: 'Bathroom Door', values: { standard: '2.6 x 7 UPVC', premium: '2.6 x 7 UPVC', luxury: '2.6 x 8 UPVC / ABS' } },
+        { id: 'f45', title: 'Windows', values: { standard: 'White / Ashara', premium: 'Prominence', luxury: 'Prominence' } },
+
+        { id: 'rl-head', title: 'Railings', type: 'heading' },
+        { id: 'f46', title: 'Staircase Railing', values: { standard: 'MS', premium: 'SS + MS', luxury: 'Glass' } },
+        { id: 'f47', title: 'Balcony Railing', values: { standard: 'MS Grill', premium: 'SS', luxury: 'Glass' } },
+
+        { id: 'pt-head', title: 'Paint', type: 'heading' },
+        { id: 'f48', title: 'Internal Walls', values: { standard: 'Asian / Berger / Nerolac', premium: 'Premium Range', luxury: 'Royal' } },
+        { id: 'f49', title: 'External Paint', values: { standard: '1 Coat Damp Proof + Apex', premium: '2 Coat Damp Proof + Ultima', luxury: 'Apex Ultima' } },
+
+        { id: 'ex-head', title: 'Extra Electrical', type: 'heading' },
+        { id: 'f50', title: 'AC Points', values: { standard: 'Hall / Bedroom', premium: 'Same', luxury: 'Same' } },
+        { id: 'f51', title: 'EV Charging', values: { standard: 'tick', premium: 'tick', luxury: 'tick' } },
+        { id: 'f52', title: 'Inverter Wiring', values: { standard: 'tick', premium: 'tick', luxury: 'tick' } },
+        { id: 'f53', title: 'Pressure Pump Provision', values: { standard: '✖', premium: '✖', luxury: 'tick' } },
+        { id: 'f54', title: 'Solar Heater Provision', values: { standard: '✖', premium: '✖', luxury: 'tick' } },
+        { id: 'f55', title: 'CCTV Wiring', values: { standard: 'tick', premium: 'tick', luxury: 'tick' } }
+    ]
 };
 
-
+const renderFeatureValue = (val) => {
+    if (!val) return <div className="flex justify-center"><Minus className="text-gray-300" size={20} /></div>;
+    if (val === 'tick') return <div className="flex justify-center"><CheckCircle2 className="text-green-500" size={20} /></div>;
+    if (val === 'dash' || val === '✖') return <div className="flex justify-center"><Minus className="text-gray-300" size={20} /></div>;
+    return <span className="text-sm font-medium text-gray-700">{val}</span>;
+};
 
 const Construction = () => {
     const location = useLocation();
     const scrollContainerRef = useRef(null);
     const [activePackage, setActivePackage] = useState(0);
 
-    const [packages, setPackages] = useState([]);
-    const [features, setFeatures] = useState([]);
-    const [featureValues, setFeatureValues] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [packages, setPackages] = useState(CONSTRUCTION_DATA.packages);
+    const [features, setFeatures] = useState(CONSTRUCTION_DATA.features);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true);
+                // Try fetching from Supabase, but favor the provided data if it works
+                // We keep it as a fallback or if the user wants to keep using Supabase
                 const [pkgRes, featRes, valRes] = await Promise.all([
                     supabase.from('packages').select('*').eq('is_active', true).order('display_order', { ascending: true }),
                     supabase.from('features').select('*').order('display_order', { ascending: true }),
                     supabase.from('feature_values').select('*')
                 ]);
-                setPackages(pkgRes.data || []);
-                setFeatures(featRes.data || []);
-                setFeatureValues(valRes.data || []);
+
+                if (pkgRes.data && pkgRes.data.length > 0) {
+                    setPackages(pkgRes.data);
+                    setFeatures(featRes.data.map(f => ({
+                        ...f,
+                        values: pkgRes.data.reduce((acc, p) => {
+                            const v = valRes.data.find(v => v.package_id === p.id && v.feature_id === f.id);
+                            acc[p.id] = v ? (v.type === 'text' ? v.value : v.type) : null;
+                            return acc;
+                        }, {})
+                    })));
+                }
             } catch (err) {
-                console.error("Error fetching comparison data:", err);
-            } finally {
-                setLoading(false);
+                console.warn("DB fetch failed, using static data fallback:", err);
             }
         };
         fetchData();
@@ -53,30 +149,6 @@ const Construction = () => {
 
     const scrollToPackage = (index) => {
         setActivePackage(index);
-        if (scrollContainerRef.current) {
-            const { scrollWidth, clientWidth } = scrollContainerRef.current;
-            const scrollableWidth = scrollWidth - clientWidth;
-            const scrollAmount = packages.length > 1 ? (scrollableWidth / (packages.length - 1)) * index : 0;
-
-            scrollContainerRef.current.scrollTo({
-                left: scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
-
-    const handleScroll = () => {
-        if (scrollContainerRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-            const scrollableWidth = scrollWidth - clientWidth;
-
-            if (scrollableWidth > 0 && packages.length > 1) {
-                const scrollRatio = scrollLeft / scrollableWidth;
-                const segment = 1 / (packages.length - 1);
-                const index = Math.round(scrollRatio / segment);
-                setActivePackage(index);
-            }
-        }
     };
 
     useEffect(() => {
@@ -96,9 +168,9 @@ const Construction = () => {
         <>
             {/* Top Banner with Breadcrumbs */}
             <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.jpeg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
-                    <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Construction</h1>
+                    <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Construction Packages</h1>
                     <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-300">
                         <Link to="/" className="hover:text-white transition">Home</Link>
                         <span>-</span>
@@ -160,11 +232,6 @@ const Construction = () => {
                                                         <h3 className={`text-[15px] font-black mb-1 ${colorSet.color}`}>{pkg.name || pkg.title}</h3>
                                                         <div className="text-[22px] font-black text-gray-900 leading-none mb-1">{pkg.price}</div>
                                                         <span className="text-[11px] font-semibold text-gray-500 block">per sq.ft</span>
-                                                        {pkg.min_area && (
-                                                            <span className="text-[10px] font-bold text-gray-500 bg-white/80 px-2 py-1 rounded inline-block mt-2 shadow-sm border border-gray-100 flex items-center justify-center">
-                                                                {pkg.min_area}
-                                                            </span>
-                                                        )}
                                                     </div>
                                                 </div>
 
@@ -179,7 +246,7 @@ const Construction = () => {
                                                             );
                                                         }
 
-                                                        const val = featureValues.find(v => v.package_id === pkg.id && v.feature_id === feat.id);
+                                                        const val = feat.values ? feat.values[pkg.id] : null;
                                                         return (
                                                             <div key={feat.id} className="flex border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors group">
                                                                 <div className="w-[45%] p-3.5 border-r border-gray-100 flex items-center bg-white group-hover:bg-gray-50 transition-colors">
@@ -201,7 +268,7 @@ const Construction = () => {
                     </div>
 
                     {/* Desktop Comparison Table */}
-                    <div className="hidden lg:block border border-gray-100 rounded-[16px] shadow-lg bg-white overflow-hidden mb-24 relative">
+                    <div className="hidden lg:block border border-gray-100 rounded-[16px] shadow-xl bg-white overflow-hidden mb-24 relative">
                         {loading ? (
                             <div className="h-64 flex items-center justify-center w-full">
                                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full shadow-lg"></div>
@@ -253,7 +320,7 @@ const Construction = () => {
                                                 </td>
                                                 {packages.map((pkg, pIdx) => {
                                                     const colorSet = colorSets[pIdx % colorSets.length];
-                                                    const val = featureValues.find(v => v.package_id === pkg.id && v.feature_id === feat.id);
+                                                    const val = feat.values ? feat.values[pkg.id] : null;
                                                     return (
                                                         <td key={pkg.id} className={`p-4 border-b border-gray-100 border-l border-gray-50 text-center text-sm transition-colors duration-300 ${colorSet.bgHighlight}`}>
                                                             {renderFeatureValue(val)}

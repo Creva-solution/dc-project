@@ -54,7 +54,7 @@ const Navbar = () => {
 
                     {/* LOGO */}
                     <Link to="/" className="flex items-center" onClick={closeMenu}>
-                        <img src="/images/dc-logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
+                        <img src="/logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
                     </Link>
 
                     {/* MOBILE TOGGLE BUTTON */}
@@ -117,7 +117,7 @@ const Navbar = () => {
 
                 {/* Drawer Header */}
                 <div className="px-6 py-5 flex justify-between items-center border-b border-gray-100">
-                    <img src="/images/dc-logo.svg" alt="DC Constructions" className="h-10 w-auto" />
+                    <img src="/logo.svg" alt="DC Constructions" className="h-10 w-auto" />
                     <button onClick={closeMenu} className="p-2 -mr-2 text-gray-500 hover:text-accent transition-colors bg-gray-50 rounded-full">
                         <X size={24} />
                     </button>
