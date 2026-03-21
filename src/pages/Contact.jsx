@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Send, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const Contact = () => {
     const [status, setStatus] = useState('');
@@ -59,14 +60,25 @@ const Contact = () => {
 
     return (
         <>
-            <section className="bg-primary pt-32 pb-20 mt-0">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0"
+            >
                 <div className="container mx-auto px-6 text-center text-white">
                     <h1 className="text-4xl md:text-6xl font-black mb-6">Contact <span className="text-accent">DC CONSTRUCTIONS</span></h1>
                     <p className="text-xl max-w-2xl mx-auto opacity-90">Send us a message and we'll respond as soon as possible</p>
                 </div>
-            </section>
+            </motion.section>
 
-            <section className="py-24 bg-gray-50">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-gray-50"
+            >
                 <div className="container mx-auto px-6 max-w-6xl flex flex-col lg:flex-row gap-16">
 
                     <div className="lg:w-1/3">
@@ -153,10 +165,16 @@ const Contact = () => {
                         </form>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Map Section */}
-            <section className="h-96 w-full bg-gray-200">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1 }}
+                className="h-96 w-full bg-gray-200"
+            >
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.4673109722135!2d79.98422227409917!3d13.128940387201089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a528fa8b68dc99d%3A0x742c299c790c0522!2sDC%20Constructions!5e1!3m2!1sen!2sin!4v1773042871866!5m2!1sen!2sin"
                     width="100%"
@@ -167,7 +185,7 @@ const Contact = () => {
                     referrerPolicy="no-referrer-when-downgrade"
                     title="Google Maps Location"
                 ></iframe>
-            </section>
+            </motion.section>
         </>
     );
 };

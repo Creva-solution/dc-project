@@ -7,6 +7,7 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isDesktopDropdownOpen, setIsDesktopDropdownOpen] = useState(false);
     const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
     // desktop dropdown ref
     const desktopDropdownRef = useRef(null);
@@ -17,6 +18,15 @@ const Navbar = () => {
         setIsDesktopDropdownOpen(false);
         setIsMobileDropdownOpen(false);
     };
+
+    // Handle scroll effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // Prevent body scroll when mobile menu is open
     useEffect(() => {
@@ -49,115 +59,131 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="sticky top-0 w-full z-40 bg-white shadow-sm border-b border-gray-100">
-                <div className="container mx-auto px-4 lg:px-6 h-20 flex justify-between items-center text-sm font-semibold text-gray-800">
+            <nav className={`sticky top-0 w-full z-[100] transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md h-20 shadow-lg border-b border-gray-100' : 'bg-white h-[92px] border-b border-gray-200'}`}>
+                <div className="container mx-auto px-4 lg:px-6 h-full flex justify-between items-center font-bold text-gray-800">
 
                     {/* LOGO */}
-                    <Link to="/" className="flex items-center" onClick={closeMenu}>
-                        <img src="/logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
+                    <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
+                        <img src="/logo.svg" alt="DC Constructions" className={`transition-all duration-300 ${scrolled ? 'h-[52px]' : 'h-[68px]'} w-auto`} />
                     </Link>
 
-                    {/* MOBILE TOGGLE BUTTON */}
-                    <button className="lg:hidden text-gray-800 p-2" onClick={() => setIsOpen(true)}>
-                        <Menu size={28} />
-                    </button>
+                    {/* DESKTOP NAVIGATION LINKS (Center) */}
+                    <ul className="hidden lg:flex flex-1 items-center justify-center gap-5 xl:gap-8 text-[16px] tracking-tight">
+                        <li>
+                            <Link to="/" className={`px-2 py-1 transition-all relative group ${isActive('/') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                Home
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/about" className={`px-2 py-1 transition-all relative group ${isActive('/about') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                About
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/about') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
 
-                    {/* DESKTOP NAVIGATION LINKS */}
-                    <ul className="hidden lg:flex items-center gap-6">
-                        <li><Link to="/" className={`hover:text-accent transition ${isActive('/') ? 'text-accent' : ''}`}>Home</Link></li>
-                        <li><Link to="/about" className={`hover:text-accent transition ${isActive('/about') ? 'text-accent' : ''}`}>About Us</Link></li>
-
-                        <li className="relative flex items-center gap-1 cursor-pointer" ref={desktopDropdownRef}>
+                        <li className="relative" ref={desktopDropdownRef}>
                             <div
-                                onClick={() => setIsDesktopDropdownOpen(!isDesktopDropdownOpen)}
-                                className={`hover:text-accent transition flex items-center py-2 ${location.pathname.includes('/packages') || isDesktopDropdownOpen ? 'text-accent' : ''}`}
+                                onMouseEnter={() => setIsDesktopDropdownOpen(true)}
+                                className={`px-2 py-1 transition-all flex items-center cursor-pointer group ${location.pathname.includes('/packages') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}
                             >
                                 <span>Packages</span>
                                 <ChevronDown size={14} className={`ml-1 transition-transform duration-300 ${isDesktopDropdownOpen ? 'rotate-180' : ''}`} />
                             </div>
 
-                            <ul className={`${isDesktopDropdownOpen ? 'max-h-64 opacity-100 visible mt-6 border border-gray-100' : 'max-h-0 opacity-0 invisible mt-0 border-transparent'} absolute top-full left-0 bg-white text-gray-800 rounded-md shadow-xl w-48 flex flex-col overflow-hidden transition-all duration-300 ease-in-out z-50`}
-                                onClick={(e) => e.stopPropagation()}
+                            <ul
+                                onMouseLeave={() => setIsDesktopDropdownOpen(false)}
+                                className={`${isDesktopDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} absolute top-full left-0 bg-white text-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] w-60 flex flex-col overflow-hidden transition-all duration-300 ease-out z-50 border border-gray-100 mt-2`}
                             >
-                                <li><Link to="/packages/construction" onClick={closeMenu} className="block px-5 py-3 hover:bg-gray-50 hover:text-accent transition text-sm">Construction</Link></li>
-                                <li><Link to="/packages/construction#calculator-section" onClick={closeMenu} className="block px-5 py-3 hover:bg-gray-50 hover:text-accent transition text-sm">Cost Calculator</Link></li>
-                                <li><Link to="/packages/architectural" onClick={closeMenu} className="block px-5 py-3 hover:bg-gray-50 hover:text-accent transition text-sm">Architectural</Link></li>
+                                <li><Link to="/packages/construction" onClick={closeMenu} className="block px-6 py-4 hover:bg-gray-50 hover:text-[#0E2C48] transition-all text-[15px] font-bold border-b border-gray-50">Construction</Link></li>
+                                <li><Link to="/packages/construction#calculator-section" onClick={closeMenu} className="block px-6 py-4 hover:bg-gray-50 hover:text-[#0E2C48] transition-all text-[15px] font-bold border-b border-gray-50">Cost Calculator</Link></li>
+                                <li><Link to="/packages/architectural" onClick={closeMenu} className="block px-6 py-4 hover:bg-gray-50 hover:text-[#0E2C48] transition-all text-[15px] font-bold">Architectural Design</Link></li>
                             </ul>
                         </li>
 
-                        <li><Link to="/interiors" className={`hover:text-accent transition ${isActive('/interiors') ? 'text-accent' : ''}`}>Interiors</Link></li>
-                        <li><Link to="/project-management" className={`hover:text-accent transition ${isActive('/project-management') ? 'text-accent' : ''}`}>Project Management</Link></li>
-                        <li><Link to="/works" className={`hover:text-accent transition ${isActive('/works') ? 'text-accent' : ''}`}>Our Works</Link></li>
-                        <li><Link to="/contact" className={`hover:text-accent transition ${isActive('/contact') ? 'text-accent' : ''}`}>Contact Us</Link></li>
+                        <li>
+                            <Link to="/interiors" className={`px-2 py-1 transition-all relative group ${isActive('/interiors') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                Interiors
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/interiors') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/project-management" className={`px-2 py-1 transition-all relative group ${isActive('/project-management') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                Project Management
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/project-management') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/works" className={`px-2 py-1 transition-all relative group ${isActive('/works') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                Projects
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/works') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/contact" className={`px-2 py-1 transition-all relative group ${isActive('/contact') ? 'text-[#0E2C48]' : 'text-gray-600 hover:text-[#0E2C48]'}`}>
+                                Contact
+                                <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-[#0E2C48] transition-transform duration-300 origin-left ${isActive('/contact') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+                            </Link>
+                        </li>
                     </ul>
 
-                    {/* RIGHT ACTION BAR (DESKTOP) */}
-                    <div className="hidden lg:flex items-center gap-5">
-                        <Link to="/consultation" className="bg-accent text-white px-5 py-3 rounded text-sm font-bold flex items-center gap-2 hover:bg-[#113250] transition shadow-sm">
-                            Free Consultation <span className="text-lg leading-none">&rarr;</span>
+                    {/* ACTION BUTTON (Right Side) */}
+                    <div className="hidden lg:flex shrink-0">
+                        <Link to="/consultation" className="bg-[#0E2C48] text-white px-7 py-3 rounded-xl text-[15px] font-extrabold hover:bg-[#113250] transition-all duration-300 shadow-[0_10px_20px_rgba(14,44,72,0.15)] hover:-translate-y-0.5 active:translate-y-0">
+                            Free Consultation
                         </Link>
-                        <div className="flex items-center gap-3 text-gray-700">
-                            <a href="https://www.instagram.com/dc.constructions_22?igsh=bDQ5YnNiN3Fxc3pj" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition"><FaInstagram size={18} /></a>
-                            <a href="https://www.youtube.com/@Dc.Constructions_Kishore.D" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition"><FaYoutube size={18} /></a>
-                            <a href="#" className="hover:text-accent transition"><FaFacebookF size={16} /></a>
-                        </div>
                     </div>
+
+                    {/* MOBILE TOGGLE BUTTON */}
+                    <button className="lg:hidden text-gray-800 p-2 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsOpen(true)}>
+                        <Menu size={28} />
+                    </button>
 
                 </div>
             </nav>
 
-            {/* MOBILE NAVIGATION DRAWER OVERLAY */}
-            <div
-                className={`fixed inset-0 bg-black/60 z-[110] transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-                onClick={closeMenu}
-            ></div>
+            {/* FULL-SCREEN MOBILE MENU */}
+            <div className={`fixed inset-0 bg-white z-[1000] transform transition-transform duration-500 ease-[cubic-bezier(0.85,0,0.15,1)] lg:hidden flex flex-col ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}>
 
-            {/* MOBILE NAVIGATION DRAWER */}
-            <div className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[350px] bg-white z-[120] transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col shadow-2xl ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-
-                {/* Drawer Header */}
-                <div className="px-6 py-5 flex justify-between items-center border-b border-gray-100">
-                    <img src="/logo.svg" alt="DC Constructions" className="h-10 w-auto" />
-                    <button onClick={closeMenu} className="p-2 -mr-2 text-gray-500 hover:text-accent transition-colors bg-gray-50 rounded-full">
-                        <X size={24} />
+                {/* Mobile Menu Header */}
+                <div className="px-6 h-20 flex justify-between items-center border-b border-gray-50">
+                    <img src="/logo.svg" alt="DC Constructions" className="h-[50px] w-auto" />
+                    <button onClick={closeMenu} className="p-2 text-gray-800 hover:bg-gray-50 rounded-full transition-colors">
+                        <X size={32} />
                     </button>
                 </div>
 
-                {/* Drawer Scrollable Content */}
-                <div className="flex-1 overflow-y-auto w-full flex flex-col justify-between">
+                {/* Mobile Menu Content */}
+                <div className="flex-1 overflow-y-auto px-8 py-10 flex flex-col">
+                    <div className="flex flex-col gap-4 text-left">
+                        <Link to="/" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>Home</Link>
+                        <Link to="/about" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/about') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>About Us</Link>
 
-                    {/* Drawer Links */}
-                    <div className="py-8 px-6 flex flex-col gap-6">
-                        <Link to="/" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/') ? 'text-accent' : 'text-[#0E2C48]'}`}>Home</Link>
-                        <Link to="/about" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/about') ? 'text-accent' : 'text-[#0E2C48]'}`}>About Us</Link>
-
-                        {/* Mobile Packages Dropdown */}
                         <div className="flex flex-col">
                             <button
                                 onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
-                                className={`flex items-center justify-between text-[18px] font-semibold w-full text-left transition-colors ${location.pathname.includes('/packages') || isMobileDropdownOpen ? 'text-accent' : 'text-[#0E2C48]'}`}
+                                className={`flex items-center gap-2 text-[20px] font-medium transform transition-colors ${location.pathname.includes('/packages') || isMobileDropdownOpen ? 'text-[#0E2C48]' : 'text-gray-400'}`}
                             >
                                 <span>Packages</span>
                                 <ChevronDown size={20} className={`transition-transform duration-300 ${isMobileDropdownOpen ? 'rotate-180' : ''}`} />
                             </button>
 
-                            {/* Dropdown Content */}
-                            <div className={`flex flex-col gap-4 overflow-hidden transition-all duration-300 ease-in-out ${isMobileDropdownOpen ? 'max-h-[200px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <Link to="/packages/construction" onClick={closeMenu} className="text-[15px] font-medium text-gray-600 hover:text-accent pl-4 border-l-2 border-transparent hover:border-accent">Construction</Link>
-                                <Link to="/packages/construction#calculator-section" onClick={closeMenu} className="text-[15px] font-medium text-gray-600 hover:text-accent pl-4 border-l-2 border-transparent hover:border-accent">Cost Calculator</Link>
-                                <Link to="/packages/architectural" onClick={closeMenu} className="text-[15px] font-medium text-gray-600 hover:text-accent pl-4 border-l-2 border-transparent hover:border-accent">Architectural</Link>
+                            <div className={`flex flex-col gap-2 overflow-hidden transition-all duration-500 ease-in-out ${isMobileDropdownOpen ? 'max-h-[300px] mt-2 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <Link to="/packages/construction" onClick={closeMenu} className="text-[16px] font-medium text-gray-400 hover:text-[#0E2C48] pl-4 border-l-2 border-gray-100">Construction</Link>
+                                <Link to="/packages/construction#calculator-section" onClick={closeMenu} className="text-[16px] font-medium text-gray-400 hover:text-[#0E2C48] pl-4 border-l-2 border-gray-100">Cost Calculator</Link>
+                                <Link to="/packages/architectural" onClick={closeMenu} className="text-[16px] font-medium text-gray-400 hover:text-[#0E2C48] pl-4 border-l-2 border-gray-100">Architectural Design</Link>
                             </div>
                         </div>
 
-                        <Link to="/interiors" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/interiors') ? 'text-accent' : 'text-[#0E2C48]'}`}>Interiors</Link>
-                        <Link to="/project-management" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/project-management') ? 'text-accent' : 'text-[#0E2C48]'}`}>Project Management</Link>
-                        <Link to="/works" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/works') ? 'text-accent' : 'text-[#0E2C48]'}`}>Our Works</Link>
-                        <Link to="/contact" onClick={closeMenu} className={`text-[18px] font-semibold transition-colors ${isActive('/contact') ? 'text-accent' : 'text-[#0E2C48]'}`}>Contact Us</Link>
+                        <Link to="/interiors" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/interiors') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>Interiors</Link>
+                        <Link to="/project-management" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/project-management') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>Project Management</Link>
+                        <Link to="/works" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/works') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>Our Projects</Link>
+                        <Link to="/contact" onClick={closeMenu} className={`text-[20px] font-medium transition-colors ${isActive('/contact') ? 'text-[#0E2C48]' : 'text-gray-400'}`}>Contact Us</Link>
                     </div>
 
-                    {/* Drawer Footer CTA */}
-                    <div className="px-6 pb-12 pt-6 mt-8 border-t border-gray-100 w-full shrink-0">
-                        <Link to="/consultation" onClick={closeMenu} className="w-full bg-accent text-white px-6 py-4 rounded-xl text-[16px] font-bold flex justify-center items-center shadow-md hover:shadow-lg hover:bg-[#113250] transition-colors">
+                    {/* Mobile CTA Button */}
+                    <div className="mt-8 sm:mt-auto mb-10">
+                        <Link to="/consultation" onClick={closeMenu} className="w-full bg-[#0E2C48] text-white py-4 rounded-xl text-lg font-extrabold flex justify-center items-center shadow-lg active:scale-[0.98] transition-all">
                             Free Consultation
                         </Link>
                     </div>

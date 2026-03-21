@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import CostCalculator from '../components/CostCalculator';
 import { CheckCircle2, Minus, Home, ShieldCheck, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const colorSets = [
     { icon: Home, color: 'text-blue-600', bgColor: 'bg-blue-50', bgHighlight: 'lg:bg-blue-50/20' },
@@ -111,18 +112,17 @@ const renderFeatureValue = (val) => {
 
 const Construction = () => {
     const location = useLocation();
-    const scrollContainerRef = useRef(null);
     const [activePackage, setActivePackage] = useState(0);
 
     const [packages, setPackages] = useState(CONSTRUCTION_DATA.packages);
     const [features, setFeatures] = useState(CONSTRUCTION_DATA.features);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 // Try fetching from Supabase, but favor the provided data if it works
-                // We keep it as a fallback or if the user wants to keep using Supabase
                 const [pkgRes, featRes, valRes] = await Promise.all([
                     supabase.from('packages').select('*').eq('is_active', true).order('display_order', { ascending: true }),
                     supabase.from('features').select('*').order('display_order', { ascending: true }),
@@ -142,14 +142,12 @@ const Construction = () => {
                 }
             } catch (err) {
                 console.warn("DB fetch failed, using static data fallback:", err);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();
     }, []);
-
-    const scrollToPackage = (index) => {
-        setActivePackage(index);
-    };
 
     useEffect(() => {
         if (location.hash) {
@@ -167,7 +165,12 @@ const Construction = () => {
     return (
         <>
             {/* Top Banner with Breadcrumbs */}
-            <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden"
+            >
                 <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Construction Packages</h1>
@@ -177,9 +180,15 @@ const Construction = () => {
                         <span className="text-white">Construction</span>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
-            <section className="pt-24 pb-32 lg:pb-24 bg-white">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="pt-24 pb-32 lg:pb-24 bg-white"
+            >
                 <div className="container mx-auto px-6">
 
                     <div className="text-center mb-12 lg:mb-16">
@@ -193,7 +202,10 @@ const Construction = () => {
                     {/* Mobile Comparison Layout (Pill Tabs + Single Card) */}
                     <div className="block lg:hidden mb-12">
                         {loading ? (
-                            <div className="py-20 flex justify-center"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full shadow-lg"></div></div>
+                            <div className="flex flex-col gap-4">
+                                <div className="h-14 w-full skeleton rounded-2xl"></div>
+                                <div className="h-[500px] w-full skeleton rounded-[16px]"></div>
+                            </div>
                         ) : packages.length === 0 ? (
                             <div className="text-center text-gray-500 py-10">Packages are currently being configured.</div>
                         ) : (
@@ -270,8 +282,16 @@ const Construction = () => {
                     {/* Desktop Comparison Table */}
                     <div className="hidden lg:block border border-gray-100 rounded-[16px] shadow-xl bg-white overflow-hidden mb-24 relative">
                         {loading ? (
-                            <div className="h-64 flex items-center justify-center w-full">
-                                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full shadow-lg"></div>
+                            <div className="p-8 flex flex-col gap-4">
+                                <div className="grid grid-cols-4 gap-4 mb-8">
+                                    <div className="h-24 w-full skeleton rounded-xl"></div>
+                                    <div className="h-24 w-full skeleton rounded-xl"></div>
+                                    <div className="h-24 w-full skeleton rounded-xl"></div>
+                                    <div className="h-24 w-full skeleton rounded-xl"></div>
+                                </div>
+                                {Array(10).fill(0).map((_, i) => (
+                                    <div key={i} className="h-10 w-full skeleton rounded-md"></div>
+                                ))}
                             </div>
                         ) : packages.length === 0 ? (
                             <div className="p-10 text-center text-gray-500">
@@ -340,7 +360,7 @@ const Construction = () => {
                     </div>
 
                 </div>
-            </section>
+            </motion.section>
         </>
     );
 };

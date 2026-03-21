@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X, ZoomIn, Plus, Minus, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const AccordionItem = ({ title, content, isOpen, onClick }) => (
     <div className="border border-gray-100 rounded-lg mb-3 overflow-hidden">
@@ -30,7 +31,13 @@ const PackageCard = ({ image_url, name, price, price_suffix, sections }) => {
     const [openSection, setOpenSection] = useState(sections?.[0]?.title || null);
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+        <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300"
+        >
             <div className="h-64 overflow-hidden relative shrink-0">
                 <img src={image_url || '/placeholder.webp'} alt={name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8">
@@ -55,7 +62,7 @@ const PackageCard = ({ image_url, name, price, price_suffix, sections }) => {
                     ))}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
@@ -137,7 +144,12 @@ const Interiors = () => {
     return (
         <>
             {/* Top Banner with Breadcrumbs */}
-            <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden"
+            >
                 <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Interiors</h1>
@@ -147,9 +159,15 @@ const Interiors = () => {
                         <span className="text-white">Interiors</span>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
-            <section className="py-24 bg-white">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white"
+            >
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <span className="text-accent font-bold tracking-wider uppercase mb-2 block text-sm">Design Solutions</span>
@@ -161,7 +179,17 @@ const Interiors = () => {
 
                     {loadingPkgs ? (
                         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-                            {[1, 2].map(i => <div key={i} className="bg-gray-100 animate-pulse rounded-2xl h-[500px]" />)}
+                            {[1, 2].map(i => (
+                                <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
+                                    <div className="h-64 skeleton w-full" />
+                                    <div className="p-8 space-y-4">
+                                        <div className="h-12 w-48 skeleton rounded-lg" />
+                                        <div className="h-10 w-full skeleton rounded-lg" />
+                                        <div className="h-10 w-full skeleton rounded-lg" />
+                                        <div className="h-10 w-full skeleton rounded-lg" />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : packages.length === 0 ? (
                         <div className="text-center py-12 px-6 border border-gray-100 rounded-3xl bg-gray-50 max-w-3xl mx-auto">
@@ -175,10 +203,16 @@ const Interiors = () => {
                         </div>
                     )}
                 </div>
-            </section>
+            </motion.section>
 
             {/* Interior Gallery Section */}
-            <section className="py-24 bg-gray-50 border-t border-gray-100">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-gray-50 border-t border-gray-100"
+            >
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <span className="text-accent font-bold tracking-wider uppercase mb-2 block text-sm">Portfolio</span>
@@ -190,7 +224,7 @@ const Interiors = () => {
 
                     {loadingGallery ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[1, 2, 3, 4].map(i => <div key={i} className="bg-gray-200 animate-pulse rounded-2xl aspect-square w-full" />)}
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <div key={i} className="skeleton rounded-2xl aspect-square w-full" />)}
                         </div>
                     ) : galleryImages.length === 0 ? (
                         <div className="text-center py-12 px-6 text-gray-400 font-bold">More projects arriving soon.</div>
@@ -216,7 +250,7 @@ const Interiors = () => {
                         </div>
                     )}
                 </div>
-            </section>
+            </motion.section>
 
             {/* Lightbox Modal */}
             {selectedImage !== null && (

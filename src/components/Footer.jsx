@@ -5,87 +5,63 @@ const Footer = () => {
     const year = new Date().getFullYear();
 
     return (
-        <footer className="bg-[#F5F7FA] text-[#333333] border-t-[6px] border-[#0B3D91]">
-            <div className="pt-16 pb-12">
-                <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <h4 className="text-lg font-bold mb-4 border-b-2 border-[#0B3D91] text-[#0B3D91] inline-block pb-1">About Us</h4>
-                        <p className="text-[#333333] text-sm mb-4 leading-relaxed">
-                            We offer end to end construction services. We build with the intention of exceeding our clients expectations for safety, quality, functionality, and aesthetics.
+        <footer className="bg-white text-gray-800 border-t border-gray-100">
+            <div className="pt-20 pb-16">
+                <div className="container mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+                    <div className="col-span-1 md:col-span-1">
+                        <img src="/logo.svg" alt="DC Constructions" className="h-10 w-auto mb-6" />
+                        <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+                            Building excellence with trust and transparency. We provide premium end-to-end residential construction solutions.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-bold mb-4 border-b-2 border-[#0B3D91] text-[#0B3D91] inline-block pb-1">Quick Links</h4>
-                        <ul className="space-y-2 text-sm font-medium">
-                            <li><Link to="/about" className="text-[#333333] hover:text-[#0B3D91] transition">About Us</Link></li>
-                            <li><Link to="/project-management" className="text-[#333333] hover:text-[#0B3D91] transition">Project Management</Link></li>
-                            <li><Link to="/works" className="text-[#333333] hover:text-[#0B3D91] transition">Our Works</Link></li>
-                            <li><Link to="/contact" className="text-[#333333] hover:text-[#0B3D91] transition">Contact Us</Link></li>
+                        <h4 className="text-[#0E2C48] font-bold mb-6">Navigation</h4>
+                        <ul className="space-y-3 text-sm font-medium text-gray-500">
+                            <li><Link to="/" className="hover:text-[#0E2C48] transition">Home</Link></li>
+                            <li><Link to="/about" className="hover:text-[#0E2C48] transition">About Us</Link></li>
+                            <li><Link to="/works" className="hover:text-[#0E2C48] transition">Our Works</Link></li>
+                            <li><Link to="/contact" className="hover:text-[#0E2C48] transition">Contact Us</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-bold mb-4 border-b-2 border-[#0B3D91] text-[#0B3D91] inline-block pb-1">Our Packages</h4>
-                        <ul className="space-y-2 text-sm font-medium">
-                            <li><Link to="/packages/construction" className="text-[#333333] hover:text-[#0B3D91] transition">For Construction</Link></li>
-                            <li><Link to="/packages/architectural" className="text-[#333333] hover:text-[#0B3D91] transition">For Architectural</Link></li>
-                            <li><Link to="/interiors" className="text-[#333333] hover:text-[#0B3D91] transition">For Interiors</Link></li>
+                        <h4 className="text-[#0E2C48] font-bold mb-6">Services</h4>
+                        <ul className="space-y-3 text-sm font-medium text-gray-500">
+                            <li><Link to="/packages/construction" className="hover:text-[#0E2C48] transition">Construction</Link></li>
+                            <li><Link to="/packages/architectural" className="hover:text-[#0E2C48] transition">Architectural</Link></li>
+                            <li><Link to="/interiors" className="hover:text-[#0E2C48] transition">Interiors</Link></li>
+                            <li><Link to="/project-management" className="hover:text-[#0E2C48] transition">Project Management</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-bold mb-4 border-b-2 border-[#0B3D91] text-[#0B3D91] inline-block pb-1">Contact Us</h4>
-                        <ul className="space-y-4 text-sm flex flex-col font-medium text-[#333333]">
-                            <li className="flex items-start gap-3 w-full">
-                                <MapPin className="text-[#0B3D91] shrink-0 mt-1" size={18} strokeWidth={2} />
-                                <span className="text-sm">Chennai - Tiruvallur High Rd,<br />opposite to SRI VENKACHALAPATHY PALACE, Veppambaattu, Annamalai Nagar,<br />Tamil Nadu 602024</span>
+                        <h4 className="text-[#0E2C48] font-bold mb-6">Connect</h4>
+                        <ul className="space-y-4 text-sm font-medium text-gray-500">
+                            <li className="flex items-start gap-3">
+                                <MapPin className="text-[#0E2C48] shrink-0" size={18} />
+                                <span>Chennai - Tiruvallur High Rd, Veppambaattu, Tamil Nadu 602024</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Phone className="text-[#0B3D91] shrink-0" size={18} strokeWidth={2} />
-                                <a href="tel:+917299114595" className="hover:text-[#0B3D91] transition">D.Kishore(Er): 7299114595</a>
+                                <Phone className="text-[#0E2C48] shrink-0" size={18} />
+                                <a href="tel:+917299114595" className="hover:text-[#0E2C48] transition">7299114595</a>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Mail className="text-[#0B3D91] shrink-0" size={18} strokeWidth={2} />
-                                <a href="mailto:dcconstructions22@gmail.com" className="hover:text-[#0B3D91] transition">dcconstructions22@gmail.com</a>
+                                <Mail className="text-[#0E2C48] shrink-0" size={18} />
+                                <a href="mailto:dcconstructions22@gmail.com" className="hover:text-[#0E2C48] transition uppercase text-xs tracking-wider">Email Us</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Bar Segment */}
-            <div className="bg-[#EAEAEA] py-6 border-t border-gray-200">
-                <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-0 text-sm font-medium text-[#333333]">
-                    {/* Left Side: Logo & Copyright */}
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-                        <Link to="/">
-                            <img src="/logo.svg" alt="DC Constructions" className="h-[46px] w-auto" />
-                        </Link>
-                        <span className="hidden md:inline-block text-gray-400">|</span>
-                        <p className="text-gray-500 font-normal">&copy; {year} DC Constructions. All Rights Reserved.</p>
-                    </div>
-
-                    {/* Right Side: Social Icons & Links */}
-                    <div className="flex flex-col items-start md:items-end gap-3 w-full md:w-auto mt-2 md:mt-0">
-                        <div className="flex gap-4">
-                            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#0B3D91] hover:bg-[#0B3D91] hover:text-white transition shadow-sm">
-                                <Facebook size={16} />
-                            </a>
-                            <a href="https://www.instagram.com/dc.constructions_22?igsh=bDQ5YnNiN3Fxc3pj" target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#0B3D91] hover:bg-[#0B3D91] hover:text-white transition shadow-sm">
-                                <Instagram size={16} />
-                            </a>
-                            <a href="https://www.youtube.com/@Dc.Constructions_Kishore.D" target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#0B3D91] hover:bg-[#0B3D91] hover:text-white transition shadow-sm">
-                                <Youtube size={16} />
-                            </a>
-                            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#0B3D91] hover:bg-[#0B3D91] hover:text-white transition shadow-sm">
-                                <Linkedin size={16} />
-                            </a>
-                        </div>
-                        <div className="flex gap-4 text-xs text-gray-400 mt-2">
-                            <Link to="#" className="hover:text-[#0B3D91] transition">Privacy Policy</Link>
-                            <Link to="#" className="hover:text-[#0B3D91] transition">Terms of Service</Link>
-                        </div>
+            <div className="bg-gray-50 py-8 border-t border-gray-100">
+                <div className="container mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-400">
+                    <p>&copy; {year} DC Constructions. All Rights Reserved.</p>
+                    <div className="flex gap-6">
+                        <a href="https://www.instagram.com/dc.constructions_22" target="_blank" rel="noopener noreferrer" className="hover:text-[#0E2C48] transition"><Instagram size={20} /></a>
+                        <a href="https://www.youtube.com/@Dc.Constructions_Kishore.D" target="_blank" rel="noopener noreferrer" className="hover:text-[#0E2C48] transition"><Youtube size={20} /></a>
+                        <a href="#" className="hover:text-[#0E2C48] transition"><Facebook size={20} /></a>
                     </div>
                 </div>
             </div>

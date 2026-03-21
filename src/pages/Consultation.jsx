@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, CalendarCheck, Home as HomeIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const Consultation = () => {
     const [status, setStatus] = useState('');
@@ -61,17 +62,28 @@ const Consultation = () => {
 
     return (
         <>
-            <section className="bg-primary pt-32 pb-20 mt-0">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0"
+            >
                 <div className="container mx-auto px-6 text-center text-white">
                     <h1 className="text-4xl md:text-6xl font-black mb-6">Free <span className="text-secondary">Consultation</span></h1>
                     <p className="text-xl max-w-2xl mx-auto opacity-90">Book an exclusive evaluation for your upcoming project.</p>
                 </div>
-            </section>
+            </motion.section>
 
             <section className="py-24 bg-blue-50">
                 <div className="container mx-auto px-6 max-w-5xl">
 
-                    <div className="grid lg:grid-cols-5 gap-12 items-center bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="grid lg:grid-cols-5 gap-12 items-center bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+                    >
 
                         <div className="lg:col-span-2 bg-gradient-to-br from-primary to-blue-900 p-12 text-white h-full relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-8 opacity-10">
@@ -155,7 +167,7 @@ const Consultation = () => {
                             </form>
                         </div>
 
-                    </div>
+                    </motion.div>
 
                 </div>
             </section>

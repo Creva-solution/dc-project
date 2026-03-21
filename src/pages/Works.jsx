@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { MapPin, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Works = () => {
     const [projects, setProjects] = useState([]);
@@ -33,14 +34,25 @@ const Works = () => {
 
     return (
         <>
-            <section className="bg-primary pt-32 pb-20 mt-0">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0"
+            >
                 <div className="container mx-auto px-6 text-center text-white">
                     <h1 className="text-4xl md:text-6xl font-black mb-6">Our Master <span className="text-secondary">Projects</span></h1>
                     <p className="text-xl max-w-2xl mx-auto opacity-90">A gallery showcasing our commitment to quality.</p>
                 </div>
-            </section>
+            </motion.section>
 
-            <section className="py-24 bg-gray-50">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-gray-50"
+            >
                 <div className="container mx-auto px-6">
                     <div className="flex flex-wrap justify-center gap-4 mb-16">
                         {categories.map(cat => (
@@ -60,7 +72,7 @@ const Works = () => {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {loading ? (
                             Array(6).fill(0).map((_, i) => (
-                                <div key={i} className="animate-pulse rounded-[1.5rem] w-full aspect-[4/3] bg-gray-200"></div>
+                                <div key={i} className="rounded-[1.5rem] w-full aspect-[4/3] skeleton"></div>
                             ))
                         ) : filteredProjects.length === 0 ? (
                             <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-gray-400 font-bold border-2 border-dashed border-gray-200 rounded-xl">
@@ -100,7 +112,7 @@ const Works = () => {
                         )}
                     </div>
                 </div>
-            </section>
+            </motion.section>
         </>
     );
 };

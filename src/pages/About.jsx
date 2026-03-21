@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Target, Eye, ShieldCheck, Users, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const About = () => {
     const [team, setTeam] = useState([]);
@@ -27,10 +28,16 @@ const About = () => {
 
         fetchTeam();
     }, []);
+
     return (
         <>
             {/* Top Banner with Breadcrumbs */}
-            <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden"
+            >
                 <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">About Us</h1>
@@ -40,10 +47,16 @@ const About = () => {
                         <span className="text-white">About Us</span>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Main Content - Two Column Layout */}
-            <section className="py-24 bg-white">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white"
+            >
                 <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
                     {/* Left Side: Text */}
                     <div>
@@ -87,37 +100,43 @@ const About = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
+            {/* Vision Section - Enhanced Brand Design */}
+            <motion.section 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1 }}
+                className="relative py-20 bg-[#0E2C48] overflow-hidden"
+            >
+                {/* Geometric Pattern Overlays */}
+                <div className="absolute inset-0 opacity-5 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(30deg,#fff_12%,transparent_12.5%,transparent_87%,#fff_87.5%,#fff),linear-gradient(150deg,#fff_12%,transparent_12.5%,transparent_87%,#fff_87.5%,#fff),linear-gradient(30deg,#fff_12%,transparent_12.5%,transparent_87%,#fff_87.5%,#fff),linear-gradient(150deg,#fff_12%,transparent_12.5%,transparent_87%,#fff_87.5%,#fff),linear-gradient(60deg,#fff_25%,transparent_25.5%,transparent_75%,#fff_75%,#fff),linear-gradient(60deg,#fff_25%,transparent_25.5%,transparent_75%,#fff_75%,#fff)] bg-[length:80px_140px]"></div>
+                </div>
+                
+                {/* Accent Red Dot */}
+                <div className="absolute top-8 left-8 w-2 h-2 bg-red-600 rounded-full animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.8)]"></div>
 
-            {/* Vision & Mission */}
-            <section className="py-24 bg-white">
-                <div className="container mx-auto px-6 text-center">
-                    <span className="text-secondary font-bold tracking-wider uppercase mb-2 block text-sm">Who We Are</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-primary mb-16">Our Vision & Mission</h2>
-
-                    <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-blue-50 p-12 rounded-2xl shadow-lg border-2 border-transparent hover:border-secondary transition">
-                            <Eye className="text-secondary w-16 h-16 mx-auto mb-6" />
-                            <h3 className="text-3xl font-bold text-primary mb-6">Our Vision</h3>
-                            <p className="text-gray-600 text-lg leading-relaxed">
-                                To become the most trusted and preferred construction firm, setting benchmarks in quality, ethics, and sustainability for generations to come.
-                            </p>
-                        </div>
-
-                        <div className="bg-primary p-12 rounded-2xl shadow-lg text-white">
-                            <Target className="text-secondary w-16 h-16 mx-auto mb-6" />
-                            <h3 className="text-3xl font-bold mb-6">Our Mission</h3>
-                            <p className="text-gray-200 text-lg leading-relaxed">
-                                Provide superior construction solutions tailored to clients’ budgets, ensuring functional brilliance, transparency, and timely delivery of projects.
-                            </p>
-                        </div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="max-w-3xl mx-auto text-center">
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight">Our Vision</h2>
+                        <div className="w-16 h-1 bg-red-600 mx-auto mb-8"></div>
+                        <p className="text-gray-100 text-[17px] md:text-lg leading-relaxed font-medium text-justify md:text-center">
+                            To create spaces that enhance the quality of life we saw the stress and frustration people were enduring to accomplish what should be a joyful milestone in their lives. We simplified the custom and new home construction processes through thoughtful consideration and smart solutions.
+                        </p>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Core Values */}
-            <section className="py-24 bg-gray-50 border-t border-gray-100">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-gray-50 border-t border-gray-100"
+            >
                 <div className="container mx-auto px-6 text-center">
                     <h2 className="text-3xl md:text-5xl font-bold text-primary mb-16">Our Core Values</h2>
 
@@ -136,10 +155,16 @@ const About = () => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Team CTA */}
-            <section className="py-20 bg-primary text-center">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="py-20 bg-primary text-center"
+            >
                 <div className="container mx-auto px-6">
                     <h2 className="text-3xl font-bold text-white mb-6">Experience Excellence With Us</h2>
                     <p className="text-gray-300 mb-8 max-w-xl mx-auto">We back our projects with 6+ years of certified architectural expertise, crafting timeless living spaces since 2020.</p>
@@ -147,10 +172,16 @@ const About = () => {
                         Get in Touch
                     </Link>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Our Team Section */}
-            <section className="py-20 bg-gray-50 border-t border-gray-100">
+            <motion.section 
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-20 bg-gray-50 border-t border-gray-100"
+            >
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <span className="text-accent font-bold tracking-wider uppercase mb-2 block text-sm">Professional Experts</span>
@@ -163,7 +194,13 @@ const About = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         {loadingTeam ? (
                             Array(4).fill(0).map((_, i) => (
-                                <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-96 animate-pulse"></div>
+                                <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-96 flex flex-col p-4">
+                                    <div className="h-48 w-full skeleton rounded-lg mb-6"></div>
+                                    <div className="h-6 w-3/4 mx-auto skeleton rounded-md mb-3"></div>
+                                    <div className="h-4 w-1/2 mx-auto skeleton rounded-md mb-6"></div>
+                                    <div className="h-3 w-full skeleton rounded-md mb-2"></div>
+                                    <div className="h-3 w-5/6 mx-auto skeleton rounded-md"></div>
+                                </div>
                             ))
                         ) : team.length === 0 ? (
                             <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-10 text-gray-400 font-bold border-2 border-dashed border-gray-200 rounded-xl">
@@ -190,9 +227,10 @@ const About = () => {
                         )}
                     </div>
                 </div>
-            </section>
+            </motion.section>
         </>
     );
 };
 
 export default About;
+

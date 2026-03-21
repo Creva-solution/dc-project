@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 const ProjectDetails = () => {
     const { id } = useParams();
@@ -35,8 +36,24 @@ const ProjectDetails = () => {
 
     if (loading) {
         return (
-            <div className="min-h-[70vh] flex items-center justify-center bg-gray-50">
-                <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full shadow-lg"></div>
+            <div className="bg-white min-h-screen pb-20">
+                <div className="h-[60vh] lg:h-[75vh] w-full skeleton" />
+                <div className="container mx-auto px-6 py-16 lg:py-24">
+                    <div className="grid lg:grid-cols-3 gap-16">
+                        <div className="lg:col-span-2 space-y-8">
+                            <div className="h-10 w-48 skeleton rounded-lg" />
+                            <div className="h-40 w-full skeleton rounded-2xl" />
+                            <div className="h-10 w-48 skeleton rounded-lg" />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="aspect-[4/3] skeleton rounded-xl" />
+                                <div className="aspect-[4/3] skeleton rounded-xl" />
+                            </div>
+                        </div>
+                        <div className="lg:col-span-1">
+                            <div className="h-[400px] w-full skeleton rounded-2xl" />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -55,7 +72,12 @@ const ProjectDetails = () => {
     return (
         <div className="bg-white min-h-screen pb-20">
             {/* Hero Section */}
-            <section className="relative h-[60vh] lg:h-[75vh] w-full mt-0">
+            <motion.section 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="relative h-[60vh] lg:h-[75vh] w-full mt-0"
+            >
                 <div className="absolute inset-0 bg-primary/40 z-10"></div>
                 <img
                     src={project.images?.[0] || '/placeholder.webp'}
@@ -70,23 +92,39 @@ const ProjectDetails = () => {
                     <div className="inline-flex max-w-max items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full px-4 py-1.5 text-sm font-bold tracking-widest uppercase mb-4">
                         {project.category}
                     </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 drop-shadow-lg leading-tight">
+                    <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 drop-shadow-lg leading-tight"
+                    >
                         {project.title}
-                    </h1>
-                    <div className="flex items-center gap-2 text-gray-200 text-lg font-medium drop-shadow-md">
+                    </motion.h1>
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className="flex items-center gap-2 text-gray-200 text-lg font-medium drop-shadow-md"
+                    >
                         <MapPin size={20} className="text-accent" /> {project.location} <span className="mx-2 opacity-50">|</span> {project.category}
-                    </div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Content Section */}
             <section className="container mx-auto px-6 py-16 lg:py-24">
                 <div className="grid lg:grid-cols-3 gap-16">
 
                     {/* Left/Main Column */}
-                    <div className="lg:col-span-2">
+                    <motion.div 
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="lg:col-span-2"
+                    >
                         <h2 className="text-3xl font-extrabold text-primary mb-6">Project Overview</h2>
-                        <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 mb-10">
+                        <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 mb-10 text-justify">
                             <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-wrap">
                                 {project.description || "No description provided."}
                             </p>
@@ -109,10 +147,16 @@ const ProjectDetails = () => {
                                 </div>
                             </>
                         )}
-                    </div>
+                    </motion.div>
 
                     {/* Right/Sidebar Column */}
-                    <div className="lg:col-span-1">
+                    <motion.div 
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="lg:col-span-1"
+                    >
                         <div className="bg-white p-8 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.06)] border border-gray-100 sticky top-28 mt-2">
                             <h3 className="text-2xl font-bold text-primary mb-6">Key Approvals & Standards</h3>
 
@@ -138,7 +182,7 @@ const ProjectDetails = () => {
                                 </Link>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                 </div>
             </section>

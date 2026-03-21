@@ -38,7 +38,7 @@ function App() {
       <div className="flex flex-col min-h-screen relative font-sans">
         <ScrollToTop />
         <Toaster position="top-right" />
-        <main className="flex-grow w-full overflow-hidden">
+        <main className="flex-grow w-full">
           <Routes>
             {/* Public Website Routes wrapped with Loaders and Navbars inline so Admin mode hides them */}
             <Route path="/" element={<><ConstructionLoader /><Navbar /><Home /></>} />
@@ -76,8 +76,8 @@ function App() {
           <Route path="*" element={<Footer />} />
         </Routes>
 
-        {/* Floating Buttons */}
-        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-[100]">
+        {/* Floating Buttons - Hidden on Mobile/Tablet due to bottom bar */}
+        <div className="hidden lg:flex fixed bottom-6 right-6 flex flex-col gap-4 z-[100]">
           <a href="tel:+1234567890" className="w-14 h-14 bg-accent text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
             <Phone fill="white" size={24} />
           </a>
