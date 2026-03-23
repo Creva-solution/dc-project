@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X, ZoomIn, Plus, Minus, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { motion } from 'framer-motion';
 
 const AccordionItem = ({ title, content, isOpen, onClick }) => (
     <div className="border border-gray-100 rounded-lg mb-3 overflow-hidden">
@@ -26,20 +25,121 @@ const AccordionItem = ({ title, content, isOpen, onClick }) => (
     </div>
 );
 
+const INTERIOR_DATA = [
+    {
+        id: 'lite',
+        name: 'Lite Package',
+        price: '₹1,600',
+        price_suffix: '/ sq.ft*',
+        display_order: 1,
+        sections: [
+            {
+                title: 'What’s Included',
+                items: [
+                    { content: 'Modular Kitchen (Basic Finish)' },
+                    { content: 'Wardrobes – Laminate Finish' },
+                    { content: 'TV Unit (Standard Design)' },
+                    { content: 'Basic False Ceiling (Living Area)' },
+                    { content: 'Electrical & Light Points Planning' },
+                    { content: 'Standard Hardware & Accessories' },
+                    { content: 'Interior 3D Design Visualization' },
+                    { content: 'Site Measurement & Installation' }
+                ]
+            },
+            {
+                title: 'Materials & Finish',
+                items: [
+                    { content: 'Commercial plywood' },
+                    { content: 'Gloss / Matte laminate finish' },
+                    { content: 'Standard branded fittings' },
+                    { content: 'Soft-close basic channels' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'prime',
+        name: 'Prime Package',
+        price: '₹1,800',
+        price_suffix: '/ sq.ft*',
+        display_order: 2,
+        sections: [
+            {
+                title: 'What’s Included',
+                items: [
+                    { content: 'Modular Kitchen (Premium Finish)' },
+                    { content: 'Wardrobes (Laminate/Acrylic)' },
+                    { content: 'Designer TV Unit' },
+                    { content: 'Complete False Ceiling (Main Areas)' },
+                    { content: 'Electrical & Lighting Consultation' },
+                    { content: 'Premium Hardware & Accessories' },
+                    { content: 'Interior 3D Design Visualization' },
+                    { content: 'Site Measurement & Installation' }
+                ]
+            },
+            {
+                title: 'Materials & Finish',
+                items: [
+                    { content: 'BWR Grade Plywood' },
+                    { content: 'Gloss/Matte Acrylic finish' },
+                    { content: 'Branded fittings (Hettich equivalent)' },
+                    { content: 'Soft-close premium channels' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'ultra',
+        name: 'Ultra Package',
+        price: '₹2,700',
+        price_suffix: '/ sq.ft*',
+        display_order: 3,
+        sections: [
+            {
+                title: 'What’s Included',
+                items: [
+                    { content: 'Premium Modular Kitchen with Accessories' },
+                    { content: 'Designer Wardrobes (Custom Finish)' },
+                    { content: 'Luxury TV Unit & Feature Wall' },
+                    { content: 'Complete False Ceiling Design' },
+                    { content: 'Cove Lighting & Ambient Lighting Setup' },
+                    { content: 'Crockery Unit / Storage Units' },
+                    { content: 'Premium Hardware & Soft-close Systems' },
+                    { content: 'Decorative Wall Panels / Wallpapers' },
+                    { content: 'Interior 3D Walkthrough Visualization' },
+                    { content: 'End-to-End Execution & Project Management' }
+                ]
+            },
+            {
+                title: 'Materials & Finish',
+                items: [
+                    { content: 'BWP Marine Plywood' },
+                    { content: 'Acrylic / PU / Veneer finish options' },
+                    { content: 'Premium branded hardware (Hettich / Hafele equivalent)' },
+                    { content: 'Designer lighting integration' }
+                ]
+            },
+            {
+                title: 'Best For',
+                items: [
+                    { content: 'Villa & premium apartments' },
+                    { content: 'Luxury lifestyle interiors' },
+                    { content: 'Custom-designed homes' },
+                    { content: 'Clients wanting turnkey interiors' }
+                ]
+            }
+        ]
+    }
+];
+
 const PackageCard = ({ image_url, name, price, price_suffix, sections }) => {
     // Default open the first section if it exists
     const [openSection, setOpenSection] = useState(sections?.[0]?.title || null);
 
     return (
-        <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300"
-        >
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
             <div className="h-64 overflow-hidden relative shrink-0">
-                <img src={image_url || '/placeholder.webp'} alt={name} className="w-full h-full object-cover" />
+                <img src={image_url || '/images/project_2026-02-25_11.23.39_AM.webp'} alt={name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8">
                     <h3 className="text-3xl font-black text-white">{name}</h3>
                 </div>
@@ -62,7 +162,7 @@ const PackageCard = ({ image_url, name, price, price_suffix, sections }) => {
                     ))}
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
@@ -89,7 +189,7 @@ const Interiors = () => {
 
                 if (pkgError) throw pkgError;
 
-                const sortedPackages = (pkgData || []).map(p => ({
+                const sortedPackages = (pkgData && pkgData.length > 0) ? pkgData.map(p => ({
                     ...p,
                     sections: (p.interior_sections || [])
                         .sort((a, b) => a.display_order - b.display_order)
@@ -97,11 +197,12 @@ const Interiors = () => {
                             ...s,
                             items: (s.interior_items || []).sort((a, b) => a.display_order - b.display_order)
                         }))
-                }));
+                })) : INTERIOR_DATA;
 
                 setPackages(sortedPackages);
             } catch (err) {
                 console.error("Error fetching packages:", err);
+                setPackages(INTERIOR_DATA);
             } finally {
                 setLoadingPkgs(false);
             }
@@ -144,12 +245,7 @@ const Interiors = () => {
     return (
         <>
             {/* Top Banner with Breadcrumbs */}
-            <motion.section 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden"
-            >
+            <section className="bg-primary pt-32 pb-20 mt-0 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[url('/images/project_2026-02-25_11.23.39_AM.webp')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-6 text-center relative z-10">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Interiors</h1>
@@ -159,15 +255,9 @@ const Interiors = () => {
                         <span className="text-white">Interiors</span>
                     </div>
                 </div>
-            </motion.section>
+            </section>
 
-            <motion.section 
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-24 bg-white"
-            >
+            <section className="py-24 bg-white">
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <span className="text-accent font-bold tracking-wider uppercase mb-2 block text-sm">Design Solutions</span>
@@ -179,17 +269,7 @@ const Interiors = () => {
 
                     {loadingPkgs ? (
                         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-                            {[1, 2].map(i => (
-                                <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-[500px]">
-                                    <div className="h-64 skeleton w-full" />
-                                    <div className="p-8 space-y-4">
-                                        <div className="h-12 w-48 skeleton rounded-lg" />
-                                        <div className="h-10 w-full skeleton rounded-lg" />
-                                        <div className="h-10 w-full skeleton rounded-lg" />
-                                        <div className="h-10 w-full skeleton rounded-lg" />
-                                    </div>
-                                </div>
-                            ))}
+                            {[1, 2].map(i => <div key={i} className="bg-gray-100 animate-pulse rounded-2xl h-[500px]" />)}
                         </div>
                     ) : packages.length === 0 ? (
                         <div className="text-center py-12 px-6 border border-gray-100 rounded-3xl bg-gray-50 max-w-3xl mx-auto">
@@ -203,16 +283,10 @@ const Interiors = () => {
                         </div>
                     )}
                 </div>
-            </motion.section>
+            </section>
 
             {/* Interior Gallery Section */}
-            <motion.section 
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-24 bg-gray-50 border-t border-gray-100"
-            >
+            <section className="py-24 bg-gray-50 border-t border-gray-100">
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <span className="text-accent font-bold tracking-wider uppercase mb-2 block text-sm">Portfolio</span>
@@ -224,7 +298,7 @@ const Interiors = () => {
 
                     {loadingGallery ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <div key={i} className="skeleton rounded-2xl aspect-square w-full" />)}
+                            {[1, 2, 3, 4].map(i => <div key={i} className="bg-gray-200 animate-pulse rounded-2xl aspect-square w-full" />)}
                         </div>
                     ) : galleryImages.length === 0 ? (
                         <div className="text-center py-12 px-6 text-gray-400 font-bold">More projects arriving soon.</div>
@@ -250,7 +324,7 @@ const Interiors = () => {
                         </div>
                     )}
                 </div>
-            </motion.section>
+            </section>
 
             {/* Lightbox Modal */}
             {selectedImage !== null && (
