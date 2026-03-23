@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2, X, UploadCloud, Armchair, ChevronDown, ChevronUp, CheckCircle2, GripVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, UploadCloud, Armchair, ChevronDown, ChevronUp, CheckCircle2, GripVertical, FileSpreadsheet, ClipboardPaste } from 'lucide-react';
 
 const InteriorsConfigPage = () => {
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isBulkModal, setIsBulkModal] = useState(false);
+    const [bulkData, setBulkData] = useState('');
     const [uploading, setUploading] = useState(false);
 
     // Editing State
@@ -192,6 +194,82 @@ const InteriorsConfigPage = () => {
         } catch (error) { toast.error(error.message); }
     };
 
+    const handleBulkImport = async () => {
+        try {
+            if (!bulkData.trim()) return;
+            setLoading(true);
+
+            // Simple parser for the provided format
+            const packageBlocks = bulkData.split(/(?=^[A-Z][A-Z\s]+PACKAGE)/m).filter(b => b.trim());
+
+            for (const block of packageBlocks) {
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                if (lines.length === 0) continue;
+
+                // 1. Extract Name
+                const nameLine = lines[0].replace(/—.*$/, '').replace(/PACKAGE.*$/, '').trim();
+                const fullName = nameLine.charAt(0).toUpperCase() + nameLine.slice(1).toLowerCase() + " Package";
+
+                // 2. Extract Price
+                let price = '₹0';
+                let suffix = '/ sq.ft*';
+                const priceLine = lines.find(l => l.includes('₹'));
+                if (priceLine) {
+                    const priceMatch = priceLine.match(/₹[\d,]+/);
+                    if (priceMatch) price = priceMatch[0];
+                    if (priceLine.includes('/')) suffix = priceLine.split(price).pop().trim();
+                }
+
+                // 3. Create Package
+                const { data: pkg, error: pkgError } = await supabase.from('interior_packages').insert({
+                    name: fullName,
+                    price: price,
+                    price_suffix: suffix,
+                    display_order: packages.length,
+                    is_active: true
+                }).select().single();
+
+                if (pkgError) throw pkgError;
+
+                // 4. Extract Sections and Items
+                let currentSection = null;
+                let sectionOrder = 0;
+
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (line.includes('₹')) continue; 
+                    
+                    const isHeader = !line.startsWith('✅') && !line.startsWith('*') && !line.startsWith('-') && line.length < 50 && !line.includes('Perfect for') && !line.includes('Ideal For');
+                    
+                    if (isHeader) {
+                        const { data: sec, error: secError } = await supabase.from('interior_sections').insert({
+                            package_id: pkg.id,
+                            title: line.replace(/[:\/]$/, '').trim(),
+                            display_order: sectionOrder++
+                        }).select().single();
+                        if (secError) throw secError;
+                        currentSection = sec;
+                    } else if (currentSection && (line.startsWith('✅') || line.startsWith('*') || line.startsWith('-') || line.startsWith('✔'))) {
+                        await supabase.from('interior_items').insert({
+                            section_id: currentSection.id,
+                            content: line.replace(/^[✅*\-✔]\s*/, '').trim(),
+                            display_order: 0 
+                        });
+                    }
+                }
+            }
+
+            toast.success("Bulk Import Processed!");
+            setIsBulkModal(false);
+            setBulkData('');
+            fetchData();
+        } catch (err) {
+            toast.error("Import Error: " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSavePackage = async () => {
         try {
             setLoading(true);
@@ -262,9 +340,14 @@ const InteriorsConfigPage = () => {
                     <h1 className="text-3xl font-black text-primary tracking-tight mb-2">Interiors Config</h1>
                     <p className="text-gray-500 font-medium text-sm">Control your interior service packages.</p>
                 </div>
-                <button onClick={() => openModal()} className="bg-primary hover:bg-secondary text-white shrink-0 font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-sm transition">
-                    <Plus size={20} /> Add Package
-                </button>
+                <div className="flex gap-2">
+                    <button onClick={() => setIsBulkModal(true)} className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold px-4 py-3 rounded-xl flex items-center gap-2 shadow-sm transition">
+                        <FileSpreadsheet size={20} /> Bulk Import
+                    </button>
+                    <button onClick={() => openModal()} className="bg-primary hover:bg-secondary text-white shrink-0 font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-sm transition">
+                        <Plus size={20} /> Add Package
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -446,6 +529,51 @@ const InteriorsConfigPage = () => {
                         <div className="p-5 border-t border-gray-100 bg-white grid grid-cols-2 gap-4 shrink-0">
                             <button onClick={() => setIsModalOpen(false)} className="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl transition">Cancel Discard</button>
                             <button onClick={handleSavePackage} className="w-full bg-primary hover:bg-secondary text-white font-bold py-3.5 rounded-xl transition shadow-xl shadow-primary/20 uppercase tracking-widest flex items-center justify-center">Commit Layout</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Bulk Import Modal */}
+            {isBulkModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-[#f8fafc]">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                                    <FileSpreadsheet size={24} />
+                                </div>
+                                <h3 className="font-bold text-gray-900 text-lg">Smart Interior Importer</h3>
+                            </div>
+                            <button onClick={() => setIsBulkModal(false)} className="text-gray-400 hover:text-gray-800 transition"><X size={24} /></button>
+                        </div>
+                        
+                        <div className="p-6 flex-1 overflow-y-auto space-y-4">
+                            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3 text-xs text-blue-800 font-medium">
+                                <div className="shrink-0"><Armchair size={18} /></div>
+                                <p>Paste your package descriptions including headers like "What's Included" and bullet points starting with ✅ or *. The system will automatically detect packages, prices, and features.</p>
+                            </div>
+
+                            <div className="relative">
+                                <textarea
+                                    className="w-full h-80 p-4 font-mono text-sm border border-gray-200 rounded-xl focus:border-emerald-500 outline-none shadow-inner bg-gray-50/50"
+                                    placeholder="LITE PACKAGE — Smart Interiors&#10;Starting from ₹1,600 / sq.ft*&#10;What’s Included&#10;✅ Modular Kitchen&#10;✅ Wardrobes"
+                                    value={bulkData}
+                                    onChange={(e) => setBulkData(e.target.value)}
+                                ></textarea>
+                                <div className="absolute top-4 right-4 p-2 pointer-events-none opacity-10">
+                                    <ClipboardPaste size={64} className="text-gray-400" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 border-t border-gray-100 bg-white grid grid-cols-2 gap-3 shrink-0">
+                            <button onClick={() => setIsBulkModal(false)} className="px-5 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition">Discard</button>
+                            <button 
+                                onClick={handleBulkImport} 
+                                className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg flex items-center justify-center gap-2 transition"
+                            >
+                                <FileSpreadsheet size={18} /> Parse & Create Packages
+                            </button>
                         </div>
                     </div>
                 </div>
